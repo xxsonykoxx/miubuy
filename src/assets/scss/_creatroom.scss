@@ -1,0 +1,180 @@
+.group-flex {
+  display: flex;
+  align-items: center;
+}
+.creat {
+  color: #fff;
+}
+.room_img {
+  width: 200px;
+  height: 100px;
+  background-color: $colorHeader;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  h3 {
+     font-family: myfont, japanese-font, serif;
+     color: #fff;
+     cursor: pointer;
+     font-size: 18px;
+  }
+  &:hover {
+    background-color: darken($colorHeader,5%);
+  }
+}
+.modale:before {
+  content: '';
+  display: none;
+  background: rgba(0, 0, 0, 0.6);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+}
+.opened:before {
+  display: block;
+}
+.opened .modal-dialog {
+  -webkit-transform: translate(0, 0);
+  -ms-transform: translate(0, 0);
+  transform: translateX(-20%);
+  top: 15%;
+}
+.modal-dialog {
+  overflow:initial;
+  background:$colorHeader;
+  border: #4e4b4b solid 2px;
+  border-radius: 8px;
+  margin-left: -200px;
+  position: fixed;
+  left: 50%;
+  top: -100%;
+  z-index: 11;
+  width: 680px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  -webkit-transform: translate(0, -500%);
+  -ms-transform: translate(0, -500%);
+  transform: translate(0, -500%);
+  -webkit-transition: -webkit-transform 0.3s ease-out;
+  -moz-transition: -moz-transform 0.3s ease-out;
+  -o-transition: -o-transform 0.3s ease-out;
+  transition: transform 0.3s ease-out;
+}
+.mb{
+  margin-bottom: 14px;
+}
+.modal-body-l{
+  margin-right: 25px;
+}
+.modal-body-r {
+  margin-left: 25px;
+  textarea {
+    resize: none;
+    white-space: pre-wrap;
+    padding: 10px;
+    font-family: myfont, japanese-font, serif;
+    color: $colorBrown;
+    font-size: 18px;
+     &:focus {
+       outline: none;
+     }
+  }
+  .rule_title {
+    margin-bottom: 15px;
+  }
+}
+.modal-body {
+  display: flex;
+  justify-content: center;
+  background-color: #fff;
+  padding: 25px;
+  height: 400px;
+  overflow-y: auto;
+  label {
+    color: $colorBrown;
+    margin-right: 15px;
+    font-size: 20px;
+  }
+  input {
+    height: 28px;
+    border: none;
+    border-bottom: 2px solid lighten($colorBrown,10%);
+    font-size: 20px;
+    padding-left: 8px;
+    font-family: myfont, japanese-font, serif;
+    color: $colorBrown;
+  }
+  select{
+    height: 28px;
+    font-family: japanese-font, myfont, serif;
+    color: $colorBrown;
+    border: none;
+    margin-right: 8px;
+    font-size: 18px;
+     border-bottom: 2px solid $colorBrown;
+  }
+}
+.roomName {
+  width: 70%;
+}
+.r18_request {
+  display: flex;
+  align-items: center;
+  span {
+    margin-left: 10px;
+    font-size: 20px;
+    font-family: myfont,  japanese-font, serif;
+    color: $colorBrown;
+  }
+}
+/* ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆ */
+
+.ribon001 {
+  position: absolute;
+  width: 90px;
+  top: -40px;
+  left: 0;
+}
+.creatroom_title {
+  font-family: myfont,  japanese-font, serif;
+  font-size: 24px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .star001 {
+    margin-left: 8px;
+    width: 30px;
+  }
+}
+.modal-header {
+  position: relative;
+}
+.modal-footer {
+  margin-bottom: 10px;
+  margin-top: 10px;
+  margin-right: 10px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  button {
+    height: 38px;
+    margin-left: 10px;
+    width: 80px;
+      font-family: myfont, japanese-font, serif;
+  font-size: 20px;
+  color: #fff;
+  background-color: $colorBrown;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  &:hover {
+     background-color: lighten($colorBrown,10%);
+  }
+  }
+}

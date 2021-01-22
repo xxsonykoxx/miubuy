@@ -1,0 +1,259 @@
+<template>
+  <div class="modale" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-header">
+          <img src="/image/deco_cat-ribon.png" alt="" class="ribon001" />
+        <h2 class="creatroom_title">
+          <img src="/image/deco_cat.png" alt="" class="star001" />
+          編輯房間
+          <img src="/image/deco_cat.png" alt="" class="star001" />
+        </h2>
+      </div>
+      <div class="modal-body">
+        <div class="modal-body-l">
+        <div class="room_name_group group-flex mb">
+          <label for="">房名</label>
+          <input type="text">
+        </div>
+        <div class="room_photo_group group-flex mb">
+          <label for="">招牌圖片</label>
+          <div class="room_img">
+            <h3>上傳</h3>
+          </div>
+        </div>
+        <div class="room_location_group group-flex mb">
+          <label for="">所在地區</label>
+          <div>
+            <select name="" id="">
+              <option value="">東京都</option>
+              <option value="">大坂府</option>
+            </select>
+            <select name="" id="">
+            <option value="">新宿</option>
+            </select>
+          </div>
+        </div>
+        <div class="category_group group-flex mb">
+          <label for="">代購種類</label>
+          <select name="" id="">
+            <option value="">ACG（遊戲、動漫）</option>
+          </select>
+        </div>
+        <div class="max_member group-flex mb">
+          <label for="">最大人數</label>
+          <select name="" id="">
+            <option value="">1</option>
+          </select>
+        </div>
+        <div class="access_review-limit group-flex mb">
+          <label for="">最低評價要求</label>
+          <select name="" id="">
+            <option value="">0</option>
+            <option value="">1</option>
+            <option value="">2</option>
+          </select>
+        </div>
+        <ul class="access_checkgroup">
+          <li class="r18_request">
+            <input type="checkbox"><span>是否接受R18委託代購</span>
+          </li>
+        </ul>
+        </div>
+        <div class="modal-body-r">
+          <label for="" class="rule_title">房間規約</label>
+          <textarea name="" id="" cols="30" rows="10"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer group-flex">
+        <button class="btn-close closemodale" aria-hidden="true">取消</button>
+        <button class="btn-close closemodale" aria-hidden="true">
+        確定</button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {};
+</script>
+
+<style lang="scss">
+@import '@/assets/scss/color.scss';
+.group-flex {
+  display: flex;
+  align-items: center;
+}
+.creat {
+  color: #fff;
+}
+.room_img {
+  width: 200px;
+  height: 100px;
+  background-color: $colorHeader;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  h3 {
+     font-family: myfont,  japanese-font, serif;
+     color: #fff;
+     cursor: pointer;
+     font-size: 18px;
+  }
+  &:hover {
+    background-color: darken($colorHeader,5%);
+  }
+}
+.modale:before {
+  content: '';
+  display: none;
+  background: rgba(0, 0, 0, 0.6);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+}
+.opened:before {
+  display: block;
+}
+.opened .modal-dialog {
+  -webkit-transform: translate(0, 0);
+  -ms-transform: translate(0, 0);
+  transform: translateX(-20%);
+  top: 15%;
+}
+.modal-dialog {
+  overflow:initial;
+  background:$colorHeader;
+  border: #4e4b4b solid 2px;
+  border-radius: 8px;
+  margin-left: -200px;
+  position: fixed;
+  left: 50%;
+  top: -100%;
+  z-index: 11;
+  width: 680px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  -webkit-transform: translate(0, -500%);
+  -ms-transform: translate(0, -500%);
+  transform: translate(0, -500%);
+  -webkit-transition: -webkit-transform 0.3s ease-out;
+  -moz-transition: -moz-transform 0.3s ease-out;
+  -o-transition: -o-transform 0.3s ease-out;
+  transition: transform 0.3s ease-out;
+}
+.mb{
+  margin-bottom: 14px;
+}
+.modal-body-l{
+  margin-right: 25px;
+}
+.modal-body-r {
+  margin-left: 25px;
+  textarea {
+    resize: none;
+    white-space: pre-wrap;
+    padding: 10px;
+    font-family: myfont,  japanese-font, serif;
+    color: $colorBrown;
+    font-size: 18px;
+     &:focus {
+       outline: none;
+     }
+  }
+  .rule_title {
+    margin-bottom: 15px;
+  }
+}
+.modal-body {
+  display: flex;
+  justify-content: center;
+  background-color: #fff;
+  padding: 25px;
+  height: 400px;
+  overflow-y: auto;
+  label {
+    color: $colorBrown;
+    margin-right: 15px;
+    font-size: 20px;
+  }
+  input {
+    height: 28px;
+    border: none;
+    border-bottom: 2px solid lighten($colorBrown,10%);
+    font-size: 20px;
+    padding-left: 8px;
+    font-family: myfont, japanese-font,  serif;
+    color: $colorBrown;
+  }
+  select{
+    height: 28px;
+    font-family: myfont,  japanese-font, serif;
+    color: $colorBrown;
+    border: none;
+    margin-right: 8px;
+    font-size: 18px;
+     border-bottom: 2px solid lighten($colorBrown,10%);
+  }
+}
+.r18_request {
+  display: flex;
+  align-items: center;
+  span {
+    margin-left: 10px;
+    font-size: 20px;
+    font-family: myfont,  japanese-font, serif;
+    color: $colorBrown;
+  }
+}
+/* ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆ */
+
+.ribon001 {
+  position: absolute;
+  width: 90px;
+  top: -40px;
+  left: 0;
+}
+.creatroom_title {
+  font-family: myfont,  japanese-font, serif;
+  font-size: 24px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .star001 {
+    margin-left: 8px;
+    width: 30px;
+  }
+}
+.modal-header {
+  position: relative;
+}
+.modal-footer {
+  margin-bottom: 10px;
+  margin-top: 10px;
+  margin-right: 10px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  button {
+    height: 38px;
+    margin-left: 10px;
+    width: 80px;
+      font-family: myfont,  japanese-font, serif;
+  font-size: 20px;
+  color: #fff;
+  background-color: $colorBrown;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  &:hover {
+     background-color: lighten($colorBrown,10%);
+  }
+  }
+}
+</style>

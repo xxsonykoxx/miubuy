@@ -1,0 +1,391 @@
+$color_bgc: rgb(163, 135, 111) ;
+$color_ribon: rgb(204,104,116);
+//☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
+*{
+  box-sizing: border-box;
+  // border: 1px solid #000 !important;
+}
+.deco_ribon002{
+  position: absolute;
+  top: -15px;
+  left: -15px;
+  width: 55px;
+  transform: rotate(-10deg);
+}
+.chatroom_max-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.return_btn {
+  position: absolute;
+  width: 50px;
+  right: 0;
+  bottom: 20px;
+  z-index: 30;
+  &:hover{
+    bottom: 30px;
+  }
+}
+.chatroom_rule-content {
+  position: relative;
+  padding: 15px;
+  background-color: #fff;
+  max-width: 720px;
+  margin: 0 auto;
+  margin-top: 20px;
+  height: auto;
+  border-radius: 8px;
+  border: 2px solid $colorBrown;
+  display: flex;
+}
+.text {
+  color: lighten($colorBrown, 8%);
+}
+.rule-area {
+  font-family: myfont, japanese-font, serif;
+  font-size: 20px;
+  color: $colorBrown;
+  width: 65%;
+  li {
+    margin-bottom: 10px;
+    img {
+      margin-right: 5px;
+    }
+  }
+  .rule_conten {
+    display:inline-block;
+    text-align: justify;
+    text-justify:inter-ideograph;
+    margin-left: 25px;
+  }
+  .center {
+    display: flex;
+    align-items: center;
+  }
+}
+.btn-area {
+  font-family: myfont, japanese-font, serif;
+  font-size: 18px;
+  width: 40%;
+  display: flex;
+  justify-content: flex-end;
+  li {
+    display: flex;
+    justify-content: center;
+    background-color:$color_bgc;
+    padding-left: 10px;
+    padding-right: 10px;
+    height: 32px;
+    margin-left: 10px;
+    border-radius: 8px;
+    color: #FFF;
+    align-items: center;
+    cursor: pointer;
+    &:hover {
+      background-color:darken($color_bgc,10%);
+    } 
+  }
+  // .close_chatBTN {
+  //   background-color: darken($colorHeader,20%);
+  //   &:hover {
+  //     background-color:darken($colorHeader,30%);
+  //   } 
+  // }
+}
+.chatroom_content {
+  position: relative;
+  max-width: 860px;
+  margin: 0 auto;
+  margin-top: 30px;
+  border-radius: 8px;
+  border: 2px solid $colorBrown;
+  background-color: #fff;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  z-index: 10;
+  height: 480px;
+  .order-area,.chat-area {
+    position: relative;
+    width: 50%;
+    font-family: myfont, japanese-font, serif;
+    color: $colorBrown;
+  }
+}
+.change_user {
+  position: absolute;
+  left: -40px;
+  top: -2px;
+}
+.order-area {
+  ul {
+    height: 240px;
+    overflow: scroll;
+    padding: 12px;
+    padding-bottom: 0px;
+  }
+  h2 {
+    font-size: 24px;
+    justify-content: center;
+    color: $colorBrown;
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    img {
+      margin-right: 8px;
+      margin-left: 8px;
+    }
+  }
+  h3 {
+    display: flex;
+    align-items: center;
+  }
+  li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+  }
+  span {
+    margin-left: 5px;
+    margin-right: 5px;
+    font-size: 22px;
+  }
+}
+//☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
+.fa-plus-circle {
+  color: $colorHeader;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 5px;
+  cursor: pointer;
+  &:hover {
+    color: darken($colorHeader, 20%);
+  }
+}
+//☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
+.addProduct {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  input {
+    font-family: myfont, japanese-font, serif;
+    font-size: 18px;
+    height: 30px;
+    padding-left: 8px;
+    border-radius: 5px;
+    border: none;
+    background-color: lighten($colorHeader,20%);
+    color: $colorBrown;
+    caret-color:lighten($colorBrown,10%);
+    &::placeholder{
+      color: lighten($colorBrown,10%);
+    }
+  }
+  i{
+    cursor: pointer;
+    &:hover {
+      color: $colorHeader;
+    }
+  }
+  .addtitle {
+    width: 220px;
+    margin-right: 10px;
+  }
+  .addprice {
+    width: 60px;
+    font-size: 20px;
+    margin-right: 15px;
+  }
+}
+.product-name {
+    max-width: 280px;
+      font-size: 18px!important;
+    }
+
+.line {
+  img {
+    display: block;
+    width: 92%;
+    margin: 0 auto;
+  }
+}
+.total {
+  padding: 10px;
+  padding-top: 12px;
+  font-size: 24px;
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  color: darken($colorHeader, 20%);
+}
+.decide {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 15px;
+}
+.decide_btn {
+  padding: 8px;
+  color: #fff;
+  font-size: 20px;
+  border-radius: 8px;
+  background-color: $color_ribon;
+  &:hover {
+    background-color: darken($color_ribon,8%);
+    cursor: pointer;
+    transform: translateY(1px);
+  }
+}
+.chat-area {
+  padding-left: 20px;
+  padding-right: 10px;
+  display: flex;
+  flex-direction: column;
+}
+.message_area {
+  background-color: lighten($colorHeader,20%);
+  border-radius: 8px;
+}
+.submit_area {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  flex:1;
+  position: relative;
+}
+.text-area {
+  font-family: myfont, japanese-font, serif;
+  padding-left: 42px;
+  width: 90%;
+  height: 100%;
+  font-size: 18px;
+  color: $colorBrown;
+  margin: 2px;
+  border-radius: 5px;
+  border: 2px solid $colorHvBrown;
+}
+.update-photo {
+  position: absolute;
+  width: 35px;
+  height: 100%;
+  left: 5px;
+  top: 0px;
+  border-right: 2px solid $colorHvBrown;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &:hover {
+    color: darken($colorBrown, 20%);
+  }
+}
+.submit_BTN {
+  width: 11%;
+  background-color: $colorBrown;
+  height: 100%;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &:hover {
+    background-color: darken($colorBrown,10%);
+  }
+}
+.fa-comment-alt {
+  color: #FFF;
+  font-size: 18px;
+}
+.messages {
+  height: 390px;
+  overflow: scroll;
+}
+.massage-user {
+  padding: 10px;
+  display: flex;
+  h3 {
+    display: flex;
+    width: auto;
+  }
+}
+.massage-to-user{
+  padding: 10px;
+  display: flex;
+  justify-content: flex-end;
+  h3 {
+    display: flex;
+    width: auto;
+    justify-content: flex-end;
+  }
+}
+.user-photo,.to-user-photo{
+  height: 30px;
+  width: 30px;
+  border-radius: 100%;
+}
+.user-message {
+  display: flex;
+  padding: 6px;
+  max-width: 180px;
+  font-size: 18px;
+  align-items: center;
+  margin-left: 5px;
+  background-color: #fff;
+  border-radius: 5px;
+}
+.to-user-message {
+  display: flex;
+  max-width: 180px;
+  padding: 6px;
+  font-size: 18px;
+  align-items: center;
+  margin-right: 5px;
+  background-color: #fff;
+  border-radius: 5px;
+}
+.submit-time {
+  display: flex;
+  align-items: flex-end;
+  margin-right: 5px;
+  margin-left: 5px;
+  font-size: 14px;
+}
+.to-user-photo {
+  background-image: url(/image/download20201101225100.png);
+  background-size: cover;
+}
+.user-photo {
+  background-image: url(/image/kagami.png);
+  background-color: #fff;
+  background-size: cover;
+}
+.orders {
+  .fa-times,.fa-check-circle {
+    color: $colorHeader;
+    margin-right: 10px;
+    cursor: pointer;
+    &:hover {
+      color: darken($colorHeader, 20%);
+    }
+  }
+}
+.edit-title{
+  font-family: myfont, japanese-font, serif;
+  font-size: 18px;
+  color: darken($colorBrown,10%);
+  height: 30px;
+  width: 250px;
+  border: none;
+  padding-left: 10px;
+}
+.edit-price {
+  font-family: myfont, japanese-font, serif;
+  color: darken($colorBrown,10%);
+  font-size: 20px;
+  max-width: 60px;
+  border: none;
+  padding-left: 5px;
+}
