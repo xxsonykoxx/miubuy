@@ -7,6 +7,8 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import qs from 'qs';
+import { ValidationProvider, extend } from 'vee-validate';
+import { required } from 'vee-validate/dist/rules';
 
 /* ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ */
 
@@ -15,9 +17,10 @@ import router from './router';
 
 Vue.config.productionTip = false;
 Vue.prototype.$qs = qs;
-Vue.use(VueAxios, axios, gsap, ScrollTrigger);
+Vue.use(VueAxios, axios, gsap, ScrollTrigger, ValidationProvider, extend, required);
 library.add(faSpinner);
 Vue.component('font-awesome-icon', FontAwesomeIcon);
+Vue.config.productionTip = false;
 
 new Vue({
   router,

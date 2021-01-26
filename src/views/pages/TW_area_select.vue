@@ -178,7 +178,6 @@ body {
 .home__container {
   background-color: $bgc;
   padding: 15px;
-  margin-top: 5px;
   margin-bottom: 20px;
   margin-left: 50px;
   margin-right: 50px;
@@ -186,7 +185,6 @@ body {
 }
 header {
   position: relative;
-  padding: 5px;
   max-width: 100%;
   display: flex;
   justify-content: space-between;
@@ -209,10 +207,8 @@ header {
     display: flex;
     margin-right: 50px;
     li {
-      margin-top: 5px;
       margin-left: 20px;
       // background-color: $color_brown;
-      padding: 3px;
       padding-left: 5px;
       padding-right: 5px;
       border-radius: 5px;

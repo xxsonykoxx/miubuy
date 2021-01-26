@@ -15,7 +15,15 @@
       <div class="myinfo_right-content">
         <form action="" class="myinfo_form">
           <div class="my-photo">
-            <h3>上傳</h3>
+           <vue-core-image-upload
+            class="uploadBTN"
+            :crop="false"
+            @imageuploaded="imageuploaded"
+            :max-file-size="5242880"
+            url="https://miubuy.rocket-coding.com/api/UpLoadFile" >
+          </vue-core-image-upload>
+            <img :src="myinfo.photo" class="myphoto">
+            <h3>上傳(jpg)</h3>
           </div>
           <div class="my-password_group info-group">
             <label for="">修改密碼</label>
@@ -62,6 +70,9 @@
 </template>
 
 <script>
+import VueCoreImageUpload from 'vue-core-image-upload';
+import Swal from 'sweetalert2';
+
 export default {
   data() {
     return {
@@ -71,11 +82,17 @@ export default {
         alias: '',
         email: '',
         phone: '',
+        photo: null,
       },
+      src: '',
       token: '',
       id: '',
       Account: '',
+      uploadPhoto: null,
     };
+  },
+  components: {
+    'vue-core-image-upload': VueCoreImageUpload,
   },
   mounted() {
     const vm = this;
@@ -94,9 +111,14 @@ export default {
       vm.myinfo.alias = user.Nickname;
       vm.myinfo.email = user.Email;
       vm.myinfo.phone = user.Phone;
+      vm.myinfo.photo = user.Picture;
     });
   },
   methods: {
+    imageuploaded(res) {
+      const img = res;
+      this.myinfo.photo = `https://miubuy.rocket-coding.com/Img/${img}`;
+    },
     patchInfo() {
       const vm = this;
       const userInfo = vm.$qs.stringify({
@@ -106,6 +128,7 @@ export default {
         Email: vm.myinfo.email,
         Nickname: vm.myinfo.alias,
         Phone: vm.myinfo.phone,
+        Picture: vm.myinfo.photo,
       });
       const config = {
         method: 'put',
@@ -118,7 +141,16 @@ export default {
       };
       vm.axios(config)
         .then((res) => {
-          console.log(res);
+          if (res.data === Number(vm.id)) {
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: '個人資料更改成功★',
+              showConfirmButton: false,
+              timer: 2000,
+            });
+          }
+          window.location.reload();
         })
         .catch((err) => {
           console.log(err);
@@ -148,6 +180,14 @@ export default {
 }
 .myinfo_content {
   display: flex;
+}
+.uploadBTN {
+  height: 100px;
+  width: 100px;
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  z-index: 10;
 }
 /*==============★ 裝飾★==============*/
 .deco01 {
@@ -229,6 +269,14 @@ export default {
   }
   &:hover {
     background-color: rgba($colorHeader, 1);
+  }
+  .myphoto {
+    width: 100px;
+    height: 100px;
+    border: 1px solid $colorBrown;
+    border-radius: 100%;
+    position: absolute;
+    z-index: 1;
   }
 }
 .form-submit {

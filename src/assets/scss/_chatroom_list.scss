@@ -1,3 +1,6 @@
+*{
+  // border: 1px solid #000 !important;
+}
 .chatroomlist_BGI {
   background-color: $colorHeader;
 }
@@ -13,7 +16,6 @@
   border-radius: 5px;
   margin: 0 auto;
   padding-top: 10px;
-  margin-top: 5px;
   margin-bottom: 40px;
 }
 //☆=========== LOGO ==========☆
@@ -123,7 +125,7 @@
 }
 .select_group {
   position: absolute;
-  top: 10px;
+  top: 13px;
   left: 25%;
   display: flex;
   align-items: center;
@@ -235,7 +237,7 @@
   padding-right: 1%;
   padding-top: 20px;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-evenly;
   flex-wrap: wrap;
 }
 .chatroom {
@@ -256,14 +258,16 @@
 }
 .profile_img {
   background-image: url(/image/download20201101225100.png);
+  background-color: $colorHeader;
   background-size: cover;
   width: 50px;
   height: 50px;
+  margin-right: 5px;
   border-radius: 100%;
 }
 .user_group {
-  padding-left: 5px;
-  padding-top: 5px;
+  padding-left: 8px;
+  padding-top: 8px;
   display: flex;
   align-items: center;
 }
@@ -304,6 +308,7 @@
 }
 .roomtag_group {
   margin-top: 18px;
+  margin-bottom: 30px;
   display: flex;
   flex-wrap: wrap;
   li {
@@ -330,6 +335,13 @@
   bottom: 0;
   right: 0;
   cursor: pointer;
+}
+.room_rule {
+  min-height: 50px;
+  p {
+    max-height: 100px;
+    overflow: scroll;
+  }
 }
 
 //☆=========== 分頁 ==========☆
@@ -507,5 +519,15 @@ footer {
 .return-chatroom_display-none {
   display: none;
 }
-.roomName {
+.roomsName {
+  width: 100%;
+}
+.fullmember {
+  background-image: url(/image/full.png);
+  background-size: cover;
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  left: 0;
+  bottom: 0;
 }

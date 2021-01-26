@@ -40,7 +40,7 @@
           <input type="checkbox" />
           <span>記住我</span>
         </h3>
-        <h5 class="login_btn" @click="login">
+        <h5 class="login_btn" @click="login" @keyup.enter="login">
           <router-link to="">登入</router-link>
         </h5>
       </form>

@@ -32,6 +32,7 @@
               <label for="" class="sign_pass">密碼</label>
               <input
                 type="password"
+                name="fieldName"
                 class="password"
                 v-model="user_signup.Password"
               />
@@ -61,7 +62,10 @@
 
         <div class="email_group">
           <label for="" class="sign_email">信箱</label>
-          <input type="email" class="email" v-model="user_signup.Email" />
+          <input type="email" class="email"
+          :rules="emailRules"
+          required
+          v-model="user_signup.Email" />
         </div>
         <div class="phone_group">
           <label for="" class="sign_phone">電話</label>
@@ -163,6 +167,10 @@ export default {
           Month: '',
           Day: '',
         },
+        emailRules: [
+          (v) => !!v || 'E-mail is required',
+          (v) => /.+@.+/.test(v) || 'E-mail must be valid',
+        ],
       },
       agree: false,
     };

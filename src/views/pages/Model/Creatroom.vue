@@ -16,10 +16,16 @@
           <input type="text" v-model=" roomInfo.Name" class="roomName">
         </div>
         <div class="room_photo_group group-flex mb">
+           <vue-core-image-upload
+            class="room_photo-uploadBTN"
+            :crop="false"
+            @imageuploaded="imageuploaded"
+            :max-file-size="5242880"
+            url="https://miubuy.rocket-coding.com/api/UpLoadFile" >
+          </vue-core-image-upload>
           <label for="">招牌圖片</label>
-          <div class="room_img">
-            <h3>上傳</h3>
-          </div>
+         <img :src="roomInfo.Picture" class="room_img">
+          <!-- <h3>上傳(jpg)</h3> -->
         </div>
         <div class="room_location_group group-flex mb">
           <label for="">所在地區</label>
@@ -63,8 +69,8 @@
         <div class="max_member group-flex mb">
           <label for="">最大人數</label>
           <select name="" v-model="roomInfo.MaxUsers">
-            <option value="1">1</option>
-            <option value="1">1</option>
+            <option value="1" selected>1</option>
+            <option value="2">2</option>
           </select>
         </div>
         <div class="access_review-limit group-flex mb">
@@ -96,6 +102,7 @@
 </template>
 
 <script>
+import VueCoreImageUpload from 'vue-core-image-upload';
 import $ from '../../../../node_modules/jquery';
 
 export default {
@@ -104,7 +111,7 @@ export default {
       roomInfo: {
         MaxUsers: '',
         Name: '',
-        Picture: '',
+        Picture: null,
         CountryId: '',
         CountyId: '',
         CityId: '',
@@ -120,6 +127,9 @@ export default {
       token: '',
       routerID: '',
     };
+  },
+  components: {
+    'vue-core-image-upload': VueCoreImageUpload,
   },
   created() {
     this.token = document.cookie.replace(
@@ -153,6 +163,10 @@ export default {
     });
   },
   methods: {
+    imageuploaded(res) {
+      const img = res;
+      this.roomInfo.Picture = `https://miubuy.rocket-coding.com/Img/${img}`;
+    },
     getcounty() {
       const vm = this;
       const countyAPI = `${process.env.VUE_APP_APIPATH}api/Counties/${vm.roomInfo.CountryId}`;
