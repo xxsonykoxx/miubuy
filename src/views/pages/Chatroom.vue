@@ -25,7 +25,7 @@
          </li>
         </ul>
         <ul class="btn-area" v-if="myUserID === hostID">
-          <li class="openmodale">編輯</li>
+          <li class="aaa" @click="openModal()">編輯</li>
           <li>廣告刊登</li>
           <li class="close_chatBTN" @click="closeRoom" v-if="closeroom">關店</li>
         </ul>
@@ -235,7 +235,8 @@ export default {
     editroom,
   },
   mounted() {
-    $('.openmodale').click((e) => {
+    $('.aaa').click((e) => {
+      console.log('123');
       e.preventDefault();
       $('.modale').addClass('opened');
     });
@@ -257,6 +258,9 @@ export default {
     },
   },
   methods: {
+    openModal() {
+      $('.modale').addClass('opened');
+    },
     saveRoom() {
       localStorage.setItem('saveRoom', this.roomID);
     },

@@ -104,6 +104,8 @@
 </template>
 
 <script>
+import Swal from 'sweetalert2';
+
 export default {
   data() {
     return {
@@ -139,6 +141,17 @@ export default {
       storage.setItem('prefecture', this.prefectureSelected);
       storage.setItem('city', this.citySelected);
       storage.setItem('Countries', '2');
+      if (this.prefectureSelected !== '' || this.citySelected !== '') {
+        this.$router.push('/ChatroomList');
+      } else {
+        Swal.fire({
+          position: 'center',
+          icon: 'error',
+          title: '請選擇地區 (´・ω・｀)',
+          showConfirmButton: false,
+          timer: 2000,
+        });
+      }
     },
     getNowstatus() {
       const vm = this;

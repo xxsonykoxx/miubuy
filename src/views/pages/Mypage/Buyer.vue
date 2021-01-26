@@ -146,7 +146,47 @@
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      token: '',
+      id: '',
+      orders: '',
+      buyers: '',
+      myOrder: '',
+    };
+  },
+  created() {
+    const vm = this;
+    this.id = localStorage.getItem('ID');
+    vm.token = document.cookie.replace(
+      // eslint-disable-next-line no-useless-escape
+      /(?:(?:^|.*;\s*)userToken\s*\=\s*([^;]*).*$)|^.*$/,
+      '$1',
+    );
+    const buyerAPI = `${process.env.VUE_APP_APIPATH}api/SellerRatings`;
+    const config = {
+      method: 'get',
+      url: buyerAPI,
+      headers: {
+        Authorization: `Bearer ${vm.token}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    };
+    vm.axios(config)
+      .then((res) => {
+        console.log(res);
+        vm.orders = res.data;
+        // 買家ID拿 所有買家吉賣家列表。
+        vm.orders.forEach((i) => {
+          vm.buyers = i.Buyer;
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  },
+};
 </script>
 
 <style lang="scss">

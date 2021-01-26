@@ -16,13 +16,13 @@
           <input type="text" v-model="roomdata.Name">
         </div>
         <div class="room_photo_group group-flex mb">
-          <vue-core-image-upload
+            <!-- <vue-core-image-upload
             class="room_photo-uploadBTN"
             :crop="false"
             @imageuploaded="imageuploaded"
             :max-file-size="5242880"
             url="https://miubuy.rocket-coding.com/api/UpLoadFile" >
-          </vue-core-image-upload>
+          </vue-core-image-upload> -->
           <label for="">招牌圖片</label>
           <img :src="roomdata.Picture" class="room_img">
         </div>
@@ -91,7 +91,7 @@
         </div>
       </div>
       <div class="modal-footer group-flex">
-        <button class="btn-close closemodale" aria-hidden="true" @click="closeModal">取消</button>
+        <button class="btn-close closemodale" aria-hidden="true">取消</button>
         <button class="btn-close closemodale" aria-hidden="true"
         @click="putRoomInfo">
         確定</button>
@@ -101,7 +101,6 @@
 </template>
 
 <script>
-import VueCoreImageUpload from 'vue-core-image-upload';
 import $ from '../../../../node_modules/jquery';
 
 export default {
@@ -115,9 +114,6 @@ export default {
     };
   },
   props: ['roomdata'],
-  components: {
-    'vue-core-image-upload': VueCoreImageUpload,
-  },
   created() {
     const vm = this;
     this.token = document.cookie.replace(
@@ -162,9 +158,6 @@ export default {
     });
   },
   methods: {
-    closeModal() {
-      $('.modale').removeClass('opened');
-    },
     imageuploaded(res) {
       const img = res;
       this.roomdata.Picture = `https://miubuy.rocket-coding.com/Img/${img}`;

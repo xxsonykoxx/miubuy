@@ -72,6 +72,7 @@ export default {
   },
   mounted() {
     $('.openmodale').click((e) => {
+      console.log('123');
       e.preventDefault();
       $('.modale').addClass('opened');
     });

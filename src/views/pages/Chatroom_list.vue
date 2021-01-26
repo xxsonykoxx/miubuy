@@ -81,7 +81,9 @@
           </h3>
           <ul class="chatroom_list">
             <li class="chatroom" v-for="room in rooms" :key="room.Id">
-              <div class="room_cover"></div>
+              <div class="room_cover"
+              :style="{'background-image': `url(${room.Picture})`}"
+              ></div>
               <div class="user_group">
                 <div class="profile_img"
                 :style="{'background-image': `url(${room.Seller[0].Picture})`}"></div>
@@ -298,7 +300,7 @@ export default {
     /* ☆…☆…☆…☆…☆…☆ ROOM API ☆…☆…☆…☆…☆…☆ */
     const roomsAPI = `${process.env.VUE_APP_APIPATH}api/SelectRooms`;
     const selectroom = vm.$qs.stringify({
-      CountryId: 1,
+      CountryId: vm.country,
     });
     const roomsConfig = {
       method: 'post',
