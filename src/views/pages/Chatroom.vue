@@ -57,11 +57,11 @@
      <li class="order text" v-for="item in Details" :key="item.Id">
               <h3>
               <span class="product-name">
-              {{item.addTitle}}
+              {{item.Name}}
               </span>
               </h3>
-              <p>$<span class="price"
-              >{{item.addPrice}}</span>
+              <p>$ <span class="price"
+              >{{item.Price}}</span>
               </p>
             </li>
    </ul>
@@ -95,11 +95,11 @@
         <div class="chat-area">
           <div class="message_area">
             <ul class="messages">
-               <li  class="massage-user">
+               <li  class="massage-user" v-for="msg in chatHistory" :key="msg.Id">
                 <h3>
                   <div class="user-photo"></div>
                   <span class="user-message">
-                    る☆んるるる~♪る☆んるるる~♪る☆んるるる~♪る☆んるるる~♪
+                   {{msg.Message}}
                   </span> <span class="submit-time">12:43</span>
                 </h3>
               </li>
@@ -109,62 +109,6 @@
                     おはようございます社長
                   </span>
                   <div class="to-user-photo"></div>
-                </h3>
-              </li>
-               <li class="massage-to-user">
-                <h3>
-                  <span class="submit-time">12:43</span><span class="to-user-message">
-                    ご機嫌良さそうですね
-                  </span>
-                  <div class="to-user-photo"></div>
-                </h3>
-              </li>
-               <li  class="massage-user">
-                <h3>
-                  <div class="user-photo"></div>
-                  <span class="user-message">
-                    はい！
-                  </span> <span class="submit-time">12:43</span>
-                </h3>
-              </li>
-               <li  class="massage-user">
-                <h3>
-                  <div class="user-photo"></div>
-                  <span class="user-message">
-                    ( ^ω^ )
-                  </span> <span class="submit-time">12:43</span>
-                </h3>
-              </li>
-              <li  class="massage-user">
-                <h3>
-                  <div class="user-photo"></div>
-                  <span class="user-message">
-                    123123123123
-                  </span> <span class="submit-time">12:43</span>
-                </h3>
-              </li>
-               <li class="massage-to-user">
-                <h3>
-                  <span class="submit-time">12:43</span><span class="to-user-message">
-                    123123123123
-                  </span>
-                  <div class="to-user-photo"></div>
-                </h3>
-              </li>
-               <li  class="massage-user">
-                <h3>
-                  <div class="user-photo"></div>
-                  <span class="user-message">
-                    123123123123
-                  </span> <span class="submit-time">12:43</span>
-                </h3>
-              </li>
-               <li  class="massage-user">
-                <h3>
-                  <div class="user-photo"></div>
-                  <span class="user-message">
-                    123123123123
-                  </span> <span class="submit-time">12:43</span>
                 </h3>
               </li>
             </ul>
@@ -241,6 +185,7 @@ export default {
       proxy: [],
       box: [],
       buyerList: '',
+      msgRoomID: '',
     };
   },
   components: {
@@ -273,6 +218,7 @@ export default {
   },
   methods: {
     initdata() {
+      const vm = this;
       // 設定連線位址
       const hub = hubConnection(
         'https://miubuy.rocket-coding.com/signalr',
@@ -283,20 +229,24 @@ export default {
       this.proxy = proxy;
       // 聊天歷史紀錄 ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
       this.proxy.on('getHistory', (text) => {
-        console.log(text);
+        vm.chatHistory = text;
       });
       // 雜七雜八ㄉ訊息 ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
-      this.proxy.on('message', (text) => {
-        console.log(text);
+      this.proxy.on('message', (text, text2) => {
+        console.log(text, text2);
+        vm.msgRoomID = text2;
       });
       // 聊天訊息接收 ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
       this.proxy.on('chatmsg', (text) => {
-        console.log(text, 123);
+        vm.chatHistory.push(text);
       });
       // 收訂單  ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
       this.proxy.on('detail', (item) => {
-        console.log(item);
-        this.Details = item;
+        console.log(Number(vm.roomID), vm.msgRoomID);
+        if (Number(vm.roomID) === vm.msgRoomID) {
+          vm.Details = item;
+          console.log(item);
+        }
       });
       // 接收  ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
       console.log('初始設定完成');
@@ -307,8 +257,8 @@ export default {
         .done(() => {
           console.log('連線成功');
           // 取得暫存訂單 ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
-          this.proxy.invoke('JOinRoom', this.myUserID);
-          this.proxy.invoke('ReadDetail', this.roomID, 8);
+          this.proxy.invoke('JOinRoom', this.myUserID, this.roomID);
+          this.proxy.invoke('ReadDetail', vm.roomID, 5);
           console.log('天竺鼠車車');
           // 加入房間時顯示ID ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
           this.proxy.invoke('GetHistory', {
@@ -334,25 +284,14 @@ export default {
       this.add = !this.add;
     },
     removeItem(item) {
-      /* eslint no-unused-vars: "error" */
-      // let newIndex = '';
-      // this.Details.forEach((i, key) => {
-      //   if (item.Id === i.Id) {
-      //     newIndex = key;
-      //   }
-      // });
-      // this.Details.splice(newIndex, 1);
-      // console.log(newIndex);
       // invoke ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
-      // invoke ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
-      this.proxy.invoke('DelDetail', item.Id, this.roomID, 8);
+      this.proxy.invoke('DelDetail', item.Id, this.roomID, 5);
     },
     sendMessage() {
       // 聊天訊息傳送
       console.log('小夫 我要傳送囉');
-      this.proxy.invoke('Send', this.chat);
       console.log(this.chat);
-      this.chat.Msg = '';
+      this.proxy.invoke('Send', this.chat);
     },
     NewDetail() {
       const addTitle = this.addProduct.addTitle.trim();
@@ -366,15 +305,15 @@ export default {
       this.Details.push({
         Name: addTitle,
         Price: Number(addPrice),
-        BuyerId: this.roomInfo.users[0].Id,
+        BuyerId: 5,
         RoomId: this.roomInfo.Id,
       });
+      this.proxy.invoke('Detail', this.Details, this.roomID, 5);
       //  ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
       this.addProduct.addTitle = '';
       this.addProduct.addPrice = '';
       this.add = !this.add;
       // invoke ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
-      this.proxy.invoke('Detail', this.Details);
     },
     closeRoom() {
       Swal.fire({
@@ -514,7 +453,7 @@ export default {
         }
         this.chat.RoomId = Number(this.roomID);
         this.chat.SenderId = Number(this.myUserID);
-        this.chat.RecipientId = 8;
+        this.chat.RecipientId = 5;
         this.initdata();
       });
   },
