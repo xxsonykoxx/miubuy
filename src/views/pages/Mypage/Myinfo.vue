@@ -168,7 +168,7 @@ export default {
 }
 /*==============★ 本體★==============*/
 .mypage_content {
-  font-family: japanese-font, myfont, serif;
+  font-family: myfont, japanese-font, serif;
   color: darken($colorBrown, 10%);
   position: relative;
   background-color: $colorBrown;

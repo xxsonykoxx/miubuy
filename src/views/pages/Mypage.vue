@@ -6,15 +6,15 @@
       <div class="mypage_container">
         <!--☆=== 選單列 ===☆-->
         <div class="mypage_orderlist_switch">
-          <router-link to="/Mypage/Seller"
+          <a @click="toSellerPage"
             ><img src="/image/selling_list_btn.png" alt="" class="selling_list"
-          /></router-link>
-          <router-link to="/Mypage/Buyer"
+          /></a>
+          <a @click="toBuyerPage"
             ><img src="/image/buying_list_btn.png" alt="" class="buying_list"
-          /></router-link>
-          <router-link to="/Mypage/Myinfo"
+          /></a>
+          <a @click="toMyinfoPage"
             ><img src="/image/user_edit_btn.png" alt="" class="user_editor"
-          /></router-link>
+          /></a>
         </div>
         <router-view></router-view>
         <!--☆=== 選單內容表 ===☆-->
@@ -49,6 +49,17 @@ export default {
   methods: {
     getInfo() {
     },
+    toBuyerPage() {
+      this.$router.push('/Mypage/Buyer');
+      window.location.reload();
+    },
+    toSellerPage() {
+      this.$router.push('/Mypage/Seller');
+      window.location.reload();
+    },
+    toMyinfoPage() {
+      this.$router.push('/Mypage/Myinfo');
+    },
   },
   created() {
   },
@@ -56,7 +67,7 @@ export default {
   /* Loading ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆ */
     setTimeout(() => {
       this.loading = true;
-    }, 1500);
+    }, 1000);
     /* ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆ */
   },
 };

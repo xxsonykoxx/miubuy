@@ -10,84 +10,26 @@
       <img src="/image/buyer.png" alt="" class="buyer_icon" />
     </div>
     <ul class="buying_content">
-      <li class="buying_list_opened">
-        <div class="expand-bar">
-          <i class="fas fa-caret-down expand-btn"></i>
-        </div>
-        <div class="order_content">
-          <div class="order_title">
-            <h3 class="order_name__closed">
-              <img src="/stars.png" alt="" width="20px" />
-              <a href="#">ブロマイド（加賀美ハヤト）</a>
-            </h3>
-          </div>
-          <div class="title_group">
-            <h3 class="price">
-              <p class="order_price__closed">$ <span>123</span></p>
-            </h3>
-
-            <h3 class="status">
-              <p class="order_status__closed">
-                未付款
-              </p>
-            </h3>
-            <h3 class="review">
-              <p class="order_review__closed">
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-              </p>
-            </h3>
-          </div>
-        </div>
-      </li>
-      <li class="buying_list_opened">
-        <div class="expand-bar">
-          <i class="fas fa-caret-down expand-btn"></i>
-        </div>
-        <div class="order_content">
-          <div class="order_title">
-            <h3 class="order_name__closed">
-              <img src="/stars.png" alt="" width="20px" />
-              <a href="#">ブロマイド（夜見れな）</a>
-            </h3>
-          </div>
-          <div class="title_group">
-            <h3 class="price">
-              <p class="order_price__closed">$ <span>123</span></p>
-            </h3>
-
-            <h3 class="status">
-              <p class="order_status__closed">
-                未付款
-              </p>
-            </h3>
-            <h3 class="review">
-              <p class="order_review__closed">
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-              </p>
-            </h3>
-          </div>
-        </div>
-      </li>
-      <li class="buying_list_opened">
-        <div class="expand-bar">
-          <i class="fas fa-caret-up expand-btn"></i>
+      <li class="buying_list_opened" v-for="(order, key) in orders" :key="order.Id"
+      @click="getIndex(key)"
+      >
+         <div class="expand-bar">
+          <img src="/image/star002.png" alt="" class="deco001 openmodale" @click="open"
+          >
         </div>
         <div class="order_content">
           <div class="order_title">
             <a href="#" class="order_photo_link">
-              <div class="order_photo"></div>
+              <div class="order_photo openmodale"
+              @click="open"
+              :style="{'background-image': `url(${order.RoomPicture})`}"
+              ></div>
             </a>
             <h3 class="order_name">
               <img src="/stars.png" alt="" width="20px" />
-              <a href="#">ブロマイド（加賀美ハヤト）</a>
+              <a href="#" class="openmodale"
+               @click="open"
+              >{{order.RoomName}}</a>
             </h3>
           </div>
           <div class="title_group">
@@ -101,7 +43,7 @@
                 />
                 金額
               </p>
-              <p class="order_price">$ <span>123</span></p>
+              <p class="order_price">$ <span>{{order.TotalPrice}}</span></p>
             </h3>
 
             <h3 class="status">
@@ -115,7 +57,7 @@
                 訂單状態
               </p>
               <p class="order_status">
-                未付款
+                {{order.Status}}
               </p>
             </h3>
             <h3 class="review">
@@ -142,10 +84,14 @@
     </ul>
     <ul class="buying_content"></ul>
     <ul class="editor_content"></ul>
+    <buyerdetail :buyerdata="orders[index]"></buyerdetail>
   </div>
 </template>
 
 <script>
+import $ from '../../../../node_modules/jquery';
+import buyerdetail from '../Model/BuyDetail.vue';
+
 export default {
   data() {
     return {
@@ -154,7 +100,25 @@ export default {
       orders: '',
       buyers: '',
       myOrder: '',
+      expand: true,
+      index: '',
     };
+  },
+  mounted() {
+  },
+  methods: {
+    getIndex(key) {
+      this.index = key;
+    },
+    open() {
+      $('.openmodale').click((e) => {
+        e.preventDefault();
+        $('.buyer-modale').addClass('opened');
+      });
+    },
+  },
+  components: {
+    buyerdetail,
   },
   created() {
     const vm = this;
@@ -164,7 +128,7 @@ export default {
       /(?:(?:^|.*;\s*)userToken\s*\=\s*([^;]*).*$)|^.*$/,
       '$1',
     );
-    const buyerAPI = `${process.env.VUE_APP_APIPATH}api/SellerRatings`;
+    const buyerAPI = `${process.env.VUE_APP_APIPATH}api/BuyerRatings`;
     const config = {
       method: 'get',
       url: buyerAPI,
@@ -177,10 +141,7 @@ export default {
       .then((res) => {
         console.log(res);
         vm.orders = res.data;
-        // 買家ID拿 所有買家吉賣家列表。
-        vm.orders.forEach((i) => {
-          vm.buyers = i.Buyer;
-        });
+        // 買家ID拿 所有買家吉賣家列表
       })
       .catch((err) => {
         console.log(err);
@@ -192,8 +153,11 @@ export default {
 <style lang="scss">
 @import '@/assets/scss/color.scss';
 /*==============★ 本體  內容區★==============*/
+.buying_list_opened {
+  position: relative;
+}
 .mypage_order_content {
-  font-family: japanese-font, myfont, serif;
+  font-family: myfont, japanese-font, serif;
   color: darken($colorBrown, 10%);
   position: relative;
   background-color: $colorBrown;
@@ -205,16 +169,19 @@ export default {
 }
 .deco01 {
   position: absolute;
+  z-index: 0 !important;
   top: -40px;
   left: -30px;
 }
 .deco02 {
   position: absolute;
+  z-index: 0 !important;
   bottom: -10px;
   right: -15px;
 }
 .deco03 {
   position: absolute;
+  z-index: 0 !important;
   top: -84px;
   left: 80px;
 }

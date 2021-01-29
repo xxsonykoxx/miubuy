@@ -47,9 +47,15 @@
             </div>
           </div>
           <div class="signup_photo_group">
-            <p>
-              上傳照片
-            </p>
+          <vue-core-image-upload
+            class="uploadBTN"
+            :crop="false"
+            @imageuploaded="imageuploaded"
+            :max-file-size="5242880"
+            url="https://miubuy.rocket-coding.com/api/UpLoadFile" >
+          </vue-core-image-upload>
+          <img :src="user_signup.Photo" class="signup-photo">
+            <h3>上傳</h3>
           </div>
         </div>
         <div class="hr"></div>
@@ -148,6 +154,7 @@
 
 <!-- 代辦事項： 表單驗證功能 -->
 <script>
+import VueCoreImageUpload from 'vue-core-image-upload';
 import Swal from 'sweetalert2';
 
 export default {
@@ -161,7 +168,7 @@ export default {
         Name: '',
         Alias: '',
         Phone: '',
-        Photo: '',
+        Photo: null,
         Birthday: {
           Year: '',
           Month: '',
@@ -175,10 +182,17 @@ export default {
       agree: false,
     };
   },
+  components: {
+    'vue-core-image-upload': VueCoreImageUpload,
+  },
   created() {
     document.body.className = 'signup';
   },
   methods: {
+    imageuploaded(res) {
+      const img = res;
+      this.user_signup.Photo = `https://miubuy.rocket-coding.com/Img/${img}`;
+    },
     signup() {
       const API = `${process.env.VUE_APP_APIPATH}api/Users`;
       const userSignUp = this.$qs.stringify({
@@ -187,9 +201,9 @@ export default {
         RePassword: this.user_signup.RePassword,
         Email: this.user_signup.Email,
         Name: this.user_signup.Name,
-        Alias: this.user_signup.Alias,
+        Nickname: this.user_signup.Alias,
         Phone: this.user_signup.Phone,
-        Photo: this.user_signup.Photo,
+        Picture: this.user_signup.Photo,
         Birthday: `${this.user_signup.Birthday.Year}-${this.user_signup.Birthday.Month}-${this.user_signup.Birthday.Day}`,
       });
 
@@ -385,9 +399,16 @@ body.signup {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  p {
+  h3 {
     color: #fff;
     font-size: 20px;
+  }
+  .signup-photo {
+    height: 120px;
+    width: 120px;
+    border-radius: 100%;
+    position: absolute;
+    z-index: 1;
   }
   &:hover {
     background-color: rgba(255, 255, 255, 0.516);
@@ -485,7 +506,7 @@ body.signup {
 }
 input::placeholder {
   color: #fff;
-  font-size: 16px;
+  font-size: 12px;
 }
 //☆=========== terms ==========☆
 .terms_group {

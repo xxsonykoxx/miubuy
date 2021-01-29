@@ -42,40 +42,39 @@
             訂單明細
             <img src="/image/star002.png" alt="" width="25px">
           </h2>
-          <i class="fas fa-plus-circle" v-if="add" @click="changeInput"></i>
-          <div class="addProduct" v-else>
-            <input type="text" class="addtitle" placeholder="商品名稱"
-            v-model="addProduct.addTitle">
-            <input type="number" class="addprice" placeholder="價格"
-            v-model="addProduct.addPrice">
-            <i class="fas fa-check" @click="addItem"></i>
+          <div v-if="myUserID === hostID">
+            <i class="fas fa-plus-circle" v-if="add" @click="changeInput"></i>
+            <div class="addProduct" v-else>
+              <input type="text" class="addtitle2" placeholder="商品名稱"
+              v-model="addProduct.addTitle">
+              <input type="number" class="addprice" placeholder="價格"
+              v-model="addProduct.addPrice">
+              <i class="fas fa-check" @click="NewDetail"></i>
+            </div>
           </div>
   <!--☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆ -->
-          <ul class="orders">
-            <li class="order text" v-for="item in OrderDetails" :key="item.id">
+   <ul v-if="myUserID !== hostID">
+     <li class="order text" v-for="item in Details" :key="item.Id">
               <h3>
-              <i class="fas fa-times" v-if="item.id!==getProduct.id"
-              @click="removeItem(item)"></i>
-              <i class="far fa-check-circle"
-              v-if="item.id===getProduct.id"
-              @click="doneEdit(item)"
-              ></i>
-              <span class="product-name" v-if="item.id!==getProduct.id" @dblclick="editTitle(item)">
-              {{item.Name}}
+              <span class="product-name">
+              {{item.addTitle}}
               </span>
-              <input type="text" class="edit-title"
-              v-if="item.id===getProduct.id"
-              v-model="getTitle"
-              >
               </h3>
               <p>$<span class="price"
-              v-if="item.id!==getProduct.id"
-               @dblclick="editTitle(item)"
-              >{{item.Price}}</span>
-              <input type="text" class="edit-price"
-              v-if="item.id===getProduct.id"
-              v-model="getPrice"
-              >
+              >{{item.addPrice}}</span>
+              </p>
+            </li>
+   </ul>
+         <ul class="orders" v-if="myUserID === hostID">
+            <li class="order text" v-for="item in Details" :key="item.Id">
+              <h3>
+              <i class="fas fa-times"
+              @click="removeItem(item)"></i>
+              <span class="product-name">
+              {{item.Name}}
+              </span>
+              </h3>
+              <p>$ <span class="price">{{item.Price}}</span>
               </p>
             </li>
           </ul>
@@ -174,8 +173,8 @@
             <a class="update-photo">
               <i class="fas fa-images"></i>
             </a>
-            <input type="text" class="text-area">
-            <a class="submit_BTN">
+            <input type="text" class="text-area" v-model="chat.Msg">
+            <a class="submit_BTN" @click="sendMessage">
              <i class="far fa-comment-alt"></i>
             </a>
           </div>
@@ -201,6 +200,8 @@
 </template>
 
 <script>
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { hubConnection } from 'signalr-no-jquery';
 import Swal from 'sweetalert2';
 import editroom from './Model/Editroom.vue';
 import $ from '../../../node_modules/jquery';
@@ -208,17 +209,25 @@ import $ from '../../../node_modules/jquery';
 // const signalR = require('@aspnet/signalr');
 
 export default {
+  inject: ['reload'],
   data() {
     return {
-      OrderDetails: [
-      ],
-      noIdDetails: [],
+      chat: {
+        SenderId: 0,
+        RecipientId: 0,
+        RoomId: 0,
+        Msg: 'tttttest',
+        MsgTime: '',
+      },
+      chatHistory: [],
+      Details: [],
       add: true,
       addProduct: {
-        id: '',
+        Id: '',
         addTitle: '',
         addPrice: '',
       },
+      buyer: '',
       getProduct: '',
       getTitle: '',
       getPrice: '',
@@ -229,6 +238,9 @@ export default {
       myUserID: '',
       hostID: '',
       loading: false,
+      proxy: [],
+      box: [],
+      buyerList: '',
     };
   },
   components: {
@@ -251,13 +263,67 @@ export default {
   computed: {
     total() {
       let totalPrice = 0;
-      this.OrderDetails.forEach((i) => {
+      this.Details.forEach((i) => {
         totalPrice += Number(i.Price);
       });
       return totalPrice;
     },
   },
+  updated() {
+  },
   methods: {
+    initdata() {
+      // 設定連線位址
+      const hub = hubConnection(
+        'https://miubuy.rocket-coding.com/signalr',
+      );
+      // 設定路由
+      const proxy = hub.createHubProxy('miuHub');
+      // 創建路由
+      this.proxy = proxy;
+      // 聊天歷史紀錄 ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
+      this.proxy.on('getHistory', (text) => {
+        console.log(text);
+      });
+      // 雜七雜八ㄉ訊息 ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
+      this.proxy.on('message', (text) => {
+        console.log(text);
+      });
+      // 聊天訊息接收 ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
+      this.proxy.on('chatmsg', (text) => {
+        console.log(text, 123);
+      });
+      // 收訂單  ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
+      this.proxy.on('detail', (item) => {
+        console.log(item);
+        this.Details = item;
+      });
+      // 接收  ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
+      console.log('初始設定完成');
+      hub
+        .start(() => {
+          console.log('連線中...');
+        })
+        .done(() => {
+          console.log('連線成功');
+          // 取得暫存訂單 ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
+          this.proxy.invoke('JOinRoom', this.myUserID);
+          this.proxy.invoke('ReadDetail', this.roomID, 8);
+          console.log('天竺鼠車車');
+          // 加入房間時顯示ID ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
+          this.proxy.invoke('GetHistory', {
+            SenderId: this.chat.SenderId,
+            RecipientId: this.chat.RecipientId,
+            RoomId: this.chat.RoomId,
+          });
+          //  this.proxy.invoke('Checkorder'); 傳確認訂單
+          // this.proxy.invoke('ReCheckorder'); 賣家訂單成立
+        })
+        .fail(() => {
+          console.log('連線失敗');
+        });
+      // 開始監聽
+    },
     openModal() {
       $('.modale').addClass('opened');
     },
@@ -267,44 +333,48 @@ export default {
     changeInput() {
       this.add = !this.add;
     },
-    editTitle(i) {
-      this.getProduct = i;
-      this.getTitle = i.Name;
-      this.getPrice = i.Price;
-    },
-    doneEdit(item) {
-      /* eslint no-param-reassign: "error" */
-      item.Name = this.getTitle;
-      item.Price = this.getPrice;
-      this.getTitle = '';
-      this.getPrice = '';
-      this.getProduct = {};
-    },
     removeItem(item) {
-    /* eslint no-unused-vars: "error" */
-      let newIndex = '';
-      this.OrderDetails.forEach((i, key) => {
-        if (item.id === i.id) {
-          newIndex = key;
-        }
-      });
-      this.OrderDetails.splice(newIndex, 1);
+      /* eslint no-unused-vars: "error" */
+      // let newIndex = '';
+      // this.Details.forEach((i, key) => {
+      //   if (item.Id === i.Id) {
+      //     newIndex = key;
+      //   }
+      // });
+      // this.Details.splice(newIndex, 1);
+      // console.log(newIndex);
+      // invoke ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
+      // invoke ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
+      this.proxy.invoke('DelDetail', item.Id, this.roomID, 8);
     },
-    addItem() {
+    sendMessage() {
+      // 聊天訊息傳送
+      console.log('小夫 我要傳送囉');
+      this.proxy.invoke('Send', this.chat);
+      console.log(this.chat);
+      this.chat.Msg = '';
+    },
+    NewDetail() {
       const addTitle = this.addProduct.addTitle.trim();
       const addPrice = this.addProduct.addPrice.trim();
       const addId = Math.floor(Date.now());
       if (!addTitle || !addPrice) {
         return;
       }
-      this.OrderDetails.push({
-        id: addId,
+      this.addProduct.Id = addId;
+      //  ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
+      this.Details.push({
         Name: addTitle,
-        Price: addPrice,
+        Price: Number(addPrice),
+        BuyerId: this.roomInfo.users[0].Id,
+        RoomId: this.roomInfo.Id,
       });
+      //  ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
       this.addProduct.addTitle = '';
       this.addProduct.addPrice = '';
       this.add = !this.add;
+      // invoke ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
+      this.proxy.invoke('Detail', this.Details);
     },
     closeRoom() {
       Swal.fire({
@@ -428,7 +498,7 @@ export default {
     /* ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆ */
     setTimeout(() => {
       this.loading = true;
-    }, 1500);
+    }, 4000);
     /* ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆ */
     const vm = this;
     vm.myUserID = localStorage.getItem('ID');
@@ -442,6 +512,10 @@ export default {
         if (vm.roomInfo.users.length >= 1) {
           vm.closeroom = false;
         }
+        this.chat.RoomId = Number(this.roomID);
+        this.chat.SenderId = Number(this.myUserID);
+        this.chat.RecipientId = 8;
+        this.initdata();
       });
   },
 };

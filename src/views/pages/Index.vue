@@ -31,6 +31,7 @@
       </div>
     </div>
     <creatroom></creatroom>
+<!-- Loading ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆-->
     <div class="loader" key="loader">
       <div id="loading" v-show="!loading">
         <div class="loading">

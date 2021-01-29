@@ -54,7 +54,9 @@
             快速找房間 ( ^ω^ )
           </h3>
           <ul class="tags">
-            <li class="tag tag-pink" v-for="tag in tags" :key="tag.Id">
+            <li class="tag tag-color" v-for="tag in tags" :key="tag.Id"
+            :style="{'background-color': tag.Color}"
+            >
               {{tag.Name}}
             </li>
           </ul>
@@ -349,5 +351,7 @@ export default {
 * {
   box-sizing: border-box;
   // border: 1px solid #000 !important;
+}
+.tag-color {
 }
 </style>
