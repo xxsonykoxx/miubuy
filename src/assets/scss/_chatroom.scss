@@ -242,11 +242,15 @@ $color_ribon: rgb(204,104,116);
   font-size: 20px;
   border-radius: 8px;
   background-color: $color_ribon;
+  cursor: pointer;
   &:hover {
     background-color: darken($color_ribon,8%);
-    cursor: pointer;
     transform: translateY(1px);
   }
+}
+.decided {
+  opacity: 0.5;
+  cursor: no-drop;
 }
 .chat-area {
   padding-left: 20px;

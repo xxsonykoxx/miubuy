@@ -32,27 +32,27 @@
       </div>
       <div class="chatroom_content">
         <img src="/image/ribon002.png" alt="" class="deco_ribon002">
+        <ul class="change_user">
+          <li class="user01"></li>
+          <li class="user02"></li>
+        </ul>
         <div class="order-area">
           <h2>
             <img src="/image/deco_cat.png" alt="" width="25px">
             訂單明細
             <img src="/image/star002.png" alt="" width="25px">
           </h2>
-<!--新增商品 ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆ -->
-          <div v-if="buyerInroom>=1">
-            <div v-if="myUserID === hostID">
-              <i class="fas fa-plus-circle" v-if="add" @click="changeInput"></i>
-              <div class="addProduct" v-else>
-                <input type="text" class="addtitle2" placeholder="商品名稱"
-                v-model="addProduct.addTitle">
-                <input type="number" class="addprice" placeholder="價格"
-                v-model="addProduct.addPrice">
-                <i class="fas fa-check" @click="NewDetail"></i>
-              </div>
+          <div v-if="myUserID === hostID">
+            <i class="fas fa-plus-circle" v-if="add" @click="changeInput"></i>
+            <div class="addProduct" v-else>
+              <input type="text" class="addtitle2" placeholder="商品名稱"
+              v-model="addProduct.addTitle">
+              <input type="number" class="addprice" placeholder="價格"
+              v-model="addProduct.addPrice">
+              <i class="fas fa-check" @click="NewDetail"></i>
             </div>
           </div>
-          <h3 v-if="buyerInroom<1">等待買家進入 ... (´・∀・｀)</h3>
-  <!--買家畫面 ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆ -->
+  <!--☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆ -->
    <ul v-if="myUserID !== hostID">
      <li class="order text" v-for="item in Details" :key="item.Id">
               <h3>
@@ -65,7 +65,6 @@
               </p>
             </li>
    </ul>
-   <!--賣家畫面 ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆ -->
          <ul class="orders" v-if="myUserID === hostID">
             <li class="order text" v-for="item in Details" :key="item.Id">
               <h3>
@@ -89,51 +88,30 @@
           <p>$<span class="price">{{total}}</span></p>
           </h3>
           <div class="decide">
-            <div v-if="buyerChecked">
-              <a class="decide_btn"
-              v-if="Number(myUserID) === buyerID"
-              @click="BuyerCheckorder"
-              >確認訂單</a>
-            </div>
-            <div v-if="!buyerChecked">
-              <a class="decide_btn"
-              v-if="Number(hostID) === Number(myUserID)"
-              @click="SellerCheckorder"
-              :class="{decided:checkoutBTN}"
-              >訂單成立</a>
-            </div>
-             <div v-if="checkoutBTN">
-               <a class="decide_btn" @click="sendOrder" v-if="myUserID !== hostID">結帳</a>
-             </div>
+            <a class="decide_btn" @click="sendOrder" v-if="myUserID === hostID">訂單成立</a>
+             <!-- <a class="decide_btn" @click="sendOrder" v-if="myUserID !== hostID">確認訂單</a> -->
           </div>
         </div>
         <div class="chat-area">
           <div class="message_area">
-<!-- eslint-disable-next-line vue/require-v-for-key -->
-            <div class="messages">
-              <template v-for="(msg, key) in chatHistory">
-                <template v-if="msg.SenderId !== Number(myUserID)">
-                  <div class="massage-user" :key="key">
-                  <h3>
-                    <div class="user-photo"></div>
-                    <span class="user-message">
-                     {{msg.Message}}
-                    </span> <span class="submit-time">{{msg.MsgTime}}</span>
-                  </h3>
-                </div>
-                </template>
-                <template v-if="msg.SenderId === Number(myUserID)">
-                  <div class="massage-to-user" :key="key">
-                    <h3>
-                      <span class="submit-time">{{msg.MsgTime}}</span><span class="to-user-message">
-                      {{msg.Message}}
-                      </span>
-                      <div class="to-user-photo"></div>
-                    </h3>
-                </div>
-                </template>
-              </template>
-            </div>
+            <ul class="messages">
+               <li  class="massage-user" v-for="msg in chatHistory" :key="msg.Id">
+                <h3>
+                  <div class="user-photo"></div>
+                  <span class="user-message">
+                   {{msg.Message}}
+                  </span> <span class="submit-time">12:43</span>
+                </h3>
+              </li>
+              <li class="massage-to-user">
+                <h3>
+                  <span class="submit-time">12:43</span><span class="to-user-message">
+                    おはようございます社長
+                  </span>
+                  <div class="to-user-photo"></div>
+                </h3>
+              </li>
+            </ul>
           </div>
           <div class="submit_area">
             <a class="update-photo">
@@ -179,10 +157,11 @@ export default {
   data() {
     return {
       chat: {
-        SenderId: '',
-        RecipientId: '',
-        RoomId: '',
-        Message: '(´・ω・｀)テスト',
+        SenderId: 0,
+        RecipientId: 0,
+        RoomId: 0,
+        Message: '測試',
+        // MsgTime: '',
       },
       chatHistory: [],
       Details: [],
@@ -197,20 +176,17 @@ export default {
       getTitle: '',
       getPrice: '',
       token: '',
-      roomID: '',
+      roomID: 0,
       roomInfo: '',
       closeroom: true,
-      myUserID: '',
-      hostID: '',
+      myUserID: 0,
+      hostID: 0,
       loading: false,
       proxy: [],
+      box: [],
       buyerList: '',
-      msgRoomID: '',
-      buyerID: '',
-      sellerInroom: 0,
-      buyerInroom: 0,
-      buyerChecked: true,
-      checkoutBTN: false,
+      msgRoomID: 0,
+      buyerID: 0,
     };
   },
   components: {
@@ -251,26 +227,15 @@ export default {
       const proxy = hub.createHubProxy('miuHub');
       // 創建路由 ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
       this.proxy = proxy;
-      // 接收進房資訊  ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
+      // 接收  ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
+      // 雜七雜八ㄉ訊息 ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
       this.proxy.on('log', (log) => {
-        console.log(log);
-        if (log === '買家確認') {
-          vm.buyerChecked = false;
-        } else if (log === '賣家開單') {
-          vm.checkoutBTN = true;
-        }
+        console.log(log, 123);
       });
       this.proxy.on('joinRoom', (userId, roomId) => {
-        if (Number(vm.hostID) === userId) {
-          vm.sellerInroom += 1;
-          console.log(`賣家進房，人數${this.sellerInroom}人`);
-          // 賣家進入 不做事
-        } else {
-          // 買家進入
+        console.log('userId:', userId);
+        if (Number(vm.hostID) !== userId) {
           vm.buyerID = userId;
-          vm.buyerInroom += 1;
-          console.log(userId);
-          console.log(`賣家進房，人數${this.buyerInroom}人`);
           // 取得歷史訊息 ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
           vm.proxy.invoke('MessageHistory', {
             SenderId: userId,
@@ -278,7 +243,14 @@ export default {
             RoomId: roomId,
           });
           // 取得暫存訂單 ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
-          vm.proxy.invoke('ReadDetail', userId, roomId);
+          vm.proxy.invoke('ReadDetail', roomId, userId);
+        } else {
+          vm.buyerID = userId;
+          vm.proxy.invoke('MessageHistory', {
+            SenderId: Number(vm.hostID),
+            RecipientId: userId,
+            RoomId: roomId,
+          });
         }
         // 聊天歷史紀錄 ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
         vm.proxy.on('messageHistory', (history) => {
@@ -287,24 +259,23 @@ export default {
       });
       // 聊天訊息接收 ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
       this.proxy.on('message', (message) => {
+        console.log('接收');
         vm.chatHistory.push(message);
       });
       // 收訂單  ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
       this.proxy.on('detail', (details) => {
         vm.Details = details;
-        console.log(details);
       });
       hub
         .start()
         .done(() => {
-          console.log('連線成功(´・ω・)！');
+          console.log('連線成功');
           // 加入房間 ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
           this.proxy.invoke('JoinRoom', this.myUserID, this.roomID);
         })
         .fail(() => {
           console.log('連線失敗');
         });
-      // 開始監聽
     },
     openModal() {
       $('.modale').addClass('opened');
@@ -317,46 +288,41 @@ export default {
     },
     removeItem(item) {
       // invoke ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
-      this.proxy.invoke('DelDetail', Number(item.Id));
+      this.proxy.invoke('DelDetail', item.Id, this.roomID, 5);
     },
     sendMessage() {
-    // 聊天訊息傳送 ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
+      // 聊天訊息傳送 ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
       console.log('発信！！！！');
-      if (Number(this.chat.SenderId) === Number(this.hostID)) {
-        this.chat.RecipientId = Number(this.buyerID);
+      console.log(this.chat);
+      if (this.chat.SenderId === this.hostID) {
+        this.chat.RecipientId = this.buyerID;
       } else {
+        // 那個傳說中出現字串的地方 ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
         this.chat.RecipientId = Number(this.hostID);
       }
       this.proxy.invoke('SendGroup', this.chat);
-      this.chat.Message = '';
     },
     NewDetail() {
       const addTitle = this.addProduct.addTitle.trim();
       const addPrice = this.addProduct.addPrice.trim();
-      // const addId = Math.floor(Date.now());
+      const addId = Math.floor(Date.now());
       if (!addTitle || !addPrice) {
         return;
       }
-      // this.addProduct.Id = addId;
+      this.addProduct.Id = addId;
       //  ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
       this.Details.push({
         Name: addTitle,
         Price: Number(addPrice),
-        // BuyerId: Number(this.buyerID),
-        // RoomId: Number(this.roomInfo.Id),
+        BuyerId: this.BuyerId,
+        RoomId: this.roomInfo.Id,
       });
-      this.proxy.invoke('NewDetail', this.Details, Number(this.buyerID), Number(this.roomID));
-      // ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
+      this.proxy.invoke('NewDetail', this.Details, this.roomID, this.buyerID);
+      //  ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
       this.addProduct.addTitle = '';
       this.addProduct.addPrice = '';
       this.add = !this.add;
-      // ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
-    },
-    BuyerCheckorder() {
-      this.proxy.invoke('CheckOrder');
-    },
-    SellerCheckorder() {
-      this.proxy.invoke('ReCheckOrder');
+      // invoke ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
     },
     closeRoom() {
       Swal.fire({
@@ -387,8 +353,17 @@ export default {
       });
     },
     sendOrder() {
+      this.OrderDetails.forEach((i) => {
+        this.noIdDetails.push({
+          Name: i.Name,
+          Price: i.Price,
+        });
+      });
       const API = `${process.env.VUE_APP_APIPATH}api/Orders`;
-      const OrderDetails = this.$qs.stringify(this.Details);
+      const OrderDetails = this.$qs.stringify({
+        Name: '',
+        OrderDetails: this.noIdDetails,
+      });
       const config = {
         method: 'post',
         url: API,
@@ -487,6 +462,7 @@ export default {
         }
         this.chat.RoomId = Number(this.roomID);
         this.chat.SenderId = Number(this.myUserID);
+        // this.chat.RecipientId = 5;
         this.initData();
       });
   },
