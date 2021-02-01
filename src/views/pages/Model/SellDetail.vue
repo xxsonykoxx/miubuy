@@ -48,7 +48,9 @@
           <div class="seller-detail_review">
             <h2>給賣家的評價</h2>
             <div class="review-content">
-              <h2 class="review-stars">★★★★★</h2>
+              <star class="review-stars"
+              v-model = "score"
+              ></star>
               <h2 class="toSeller-comment">留言：
                 <span>{{sellerdata.SellerReviews}}</span>
               </h2>
@@ -65,16 +67,21 @@
 </template>
 
 <script>
+import star from '../../../components/Star.vue';
 import $ from '../../../../node_modules/jquery';
 
 export default {
   data() {
     return {
       token: '',
+      score: 1,
     };
   },
   props: ['sellerdata'],
   mounted() {
+  },
+  components: {
+    star,
   },
   methods: {
     close() {

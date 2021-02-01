@@ -143,7 +143,7 @@ export default {
   methods: {
     putOrder() {
       const vm = this;
-      const putOrder = `${process.env.VUE_APP_APIPATH}api/Orders/${vm.orderID}`;
+      const putOrder = `${process.env.VUE_APP_APIPATH}api/Orders/61`;
       const orderDetail = vm.$qs.stringify(vm.personalDetail);
       const config = {
         method: 'put',

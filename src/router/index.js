@@ -13,7 +13,6 @@ import Buyer from '../views/pages/Mypage/Buyer.vue';
 import Myinfo from '../views/pages/Mypage/Myinfo.vue';
 import Chatroom from '../views/pages/Chatroom.vue';
 import Checkout from '../views/pages/Checkout.vue';
-import Test from '../views/pages/Test.vue';
 
 Vue.use(VueRouter);
 
@@ -80,11 +79,6 @@ const routes = [
     ],
   },
   {
-    path: '/Test',
-    name: Test,
-    component: Test,
-  },
-  {
     path: '/Login',
     name: 'Login',
     component: Login,
@@ -103,7 +97,7 @@ const routes = [
     },
   },
   {
-    path: '/Checkout',
+    path: '/Checkout/:Id',
     name: 'Checkout',
     component: Checkout,
     meta: {

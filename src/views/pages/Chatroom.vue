@@ -95,7 +95,7 @@
               @click="BuyerCheckorder"
               >確認訂單</a>
             </div>
-            <div v-if="!buyerChecked">
+            <div v-if="sellerChecked">
               <a class="decide_btn"
               v-if="Number(hostID) === Number(myUserID)"
               @click="SellerCheckorder"
@@ -210,7 +210,9 @@ export default {
       sellerInroom: 0,
       buyerInroom: 0,
       buyerChecked: true,
+      sellerChecked: false,
       checkoutBTN: false,
+      getOrderID: '',
     };
   },
   components: {
@@ -254,11 +256,6 @@ export default {
       // 接收進房資訊  ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
       this.proxy.on('log', (log) => {
         console.log(log);
-        if (log === '買家確認') {
-          vm.buyerChecked = false;
-        } else if (log === '賣家開單') {
-          vm.checkoutBTN = true;
-        }
       });
       this.proxy.on('joinRoom', (userId, roomId) => {
         if (Number(vm.hostID) === userId) {
@@ -269,8 +266,8 @@ export default {
           // 買家進入
           vm.buyerID = userId;
           vm.buyerInroom += 1;
-          console.log(userId);
-          console.log(`賣家進房，人數${this.buyerInroom}人`);
+          // console.log(userId);
+          // console.log(`賣家進房，人數${this.buyerInroom}人`);
           // 取得歷史訊息 ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
           vm.proxy.invoke('MessageHistory', {
             SenderId: userId,
@@ -280,10 +277,10 @@ export default {
           // 取得暫存訂單 ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
           vm.proxy.invoke('ReadDetail', userId, roomId);
         }
-        // 聊天歷史紀錄 ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
-        vm.proxy.on('messageHistory', (history) => {
-          vm.chatHistory = history;
-        });
+      });
+      // 聊天歷史紀錄 ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
+      this.proxy.on('messageHistory', (history) => {
+        this.chatHistory = history;
       });
       // 聊天訊息接收 ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
       this.proxy.on('message', (message) => {
@@ -292,14 +289,27 @@ export default {
       // 收訂單  ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
       this.proxy.on('detail', (details) => {
         vm.Details = details;
-        console.log(details);
+        // console.log(details);
+      });
+      this.proxy.on('getRoomUsers', (res) => {
+        console.log(res);
+        if (res.Status === '訂單確認') {
+          vm.sellerChecked = true;
+        }
+        if (res.Status === '訂單送出') {
+          vm.checkoutBTN = true;
+          vm.getOrderID = res.OrderId;
+          console.log('訂單送出', vm.getOrderID);
+        }
       });
       hub
         .start()
         .done(() => {
           console.log('連線成功(´・ω・)！');
+          console.log(Number(this.roomID));
           // 加入房間 ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
-          this.proxy.invoke('JoinRoom', this.myUserID, this.roomID);
+          this.proxy.invoke('JoinRoom', this.myUserID, Number(this.roomID));
+          this.proxy.invoke('GetRoomUsers', Number(this.roomID));
         })
         .fail(() => {
           console.log('連線失敗');
@@ -353,10 +363,31 @@ export default {
       // ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
     },
     BuyerCheckorder() {
-      this.proxy.invoke('CheckOrder');
+      this.buyerChecked = false;
+      this.proxy.invoke('CheckOrder', this.roomID);
     },
     SellerCheckorder() {
-      this.proxy.invoke('ReCheckOrder');
+      const API = `${process.env.VUE_APP_APIPATH}api/Orders`;
+      const OrderDetails = this.$qs.stringify({
+        BuyerId: this.buyerID,
+        RoomId: Number(this.roomID),
+      });
+      const config = {
+        method: 'post',
+        url: API,
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        data: OrderDetails,
+      };
+      this.axios(config)
+        .then((response) => {
+          this.proxy.invoke('ReCheckOrder', this.buyerID, this.roomID, response.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     closeRoom() {
       Swal.fire({
@@ -387,26 +418,7 @@ export default {
       });
     },
     sendOrder() {
-      const API = `${process.env.VUE_APP_APIPATH}api/Orders`;
-      const OrderDetails = this.$qs.stringify(this.Details);
-      const config = {
-        method: 'post',
-        url: API,
-        headers: {
-          Authorization: `Bearer ${this.token}`,
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        data: OrderDetails,
-      };
-      this.axios(config)
-        .then((response) => {
-          sessionStorage.setItem('OrderID', response.data);
-          console.log(response);
-          this.$router.push('/Checkout');
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      this.$router.push(`/Checkout/${this.getOrderID}`);
     },
     buyerExitRoom() {
       if (this.myUserID !== this.hostID) {
