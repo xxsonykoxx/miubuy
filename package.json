@@ -25,7 +25,8 @@
     "vue": "^2.6.11",
     "vue-axios": "^3.2.2",
     "vue-core-image-upload": "^2.4.13",
-    "vue-router": "^3.2.0"
+    "vue-router": "^3.2.0",
+    "vue-star-rating": "^1.7.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",

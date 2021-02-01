@@ -47,12 +47,17 @@
           <div class="line005"></div>
           <div class="seller-detail_review">
             <h2>給賣家的評價</h2>
-            <div class="review-content">
-              <star class="review-stars"
-              v-model = "score"
-              ></star>
+            <button class="reviewBTN"
+            v-if="add"
+            @click="doReview"
+            >評價買家</button>
+            <div class="review-content" v-else>
+              <div class="flex">
+                <star-rating v-model="rating"></star-rating>
+                <i class="far fa-check-circle"></i>
+              </div>
               <h2 class="toSeller-comment">留言：
-                <span>{{sellerdata.SellerReviews}}</span>
+                <input type="text" class="review-text">
               </h2>
             </div>
           </div>
@@ -67,21 +72,22 @@
 </template>
 
 <script>
-import star from '../../../components/Star.vue';
+import starRating from 'vue-star-rating';
 import $ from '../../../../node_modules/jquery';
 
 export default {
   data() {
     return {
       token: '',
-      score: 1,
+      rating: 0,
+      add: true,
     };
   },
   props: ['sellerdata'],
   mounted() {
   },
   components: {
-    star,
+    starRating,
   },
   methods: {
     close() {
@@ -90,6 +96,9 @@ export default {
         $('.seller-modale').removeClass('opened');
       });
     },
+    doReview() {
+      this.add = !this.add;
+    },
   },
 };
 </script>
@@ -97,5 +106,42 @@ export default {
 <style lang="scss">
 @import '@/assets/scss/color.scss';
 @import '@/assets/scss/_sellerDetail.scss';
-
+.reviewBTN {
+  min-width: 75px;
+  min-height: 35px;
+  font-size: 20px;
+  background-color: $colorBar;
+  border: none;
+  color: #fff;
+  border-radius: 4px;
+  margin-top: 15px;
+  margin-left: 15px;
+  font-family: myfont, japanese-font, serif;
+  cursor: pointer;
+  &:hover {
+    background-color: darken($colorBar,10%);
+  }
+}
+.review-text {
+  border: none;
+  height: 30px;
+  font-size: 12px;
+  border-bottom: 1px solid rgb(190, 185, 179);
+  min-width: 240px;
+  color: $colorBrown;
+  letter-spacing: 1.5px;
+}
+.flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  i {
+    margin-right: 30px;
+    cursor: pointer;
+    color: lighten($colorBrown,20%);
+    &:hover {
+      color:$colorBrown;
+    }
+  }
+}
 </style>

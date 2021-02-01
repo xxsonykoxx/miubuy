@@ -127,10 +127,10 @@ export default {
     };
   },
   created() {
+    this.orderID = this.$route.params.Id;
     setTimeout(() => {
       this.loading = true;
     }, 1500);
-    this.orderID = sessionStorage.getItem('OrderID');
     this.token = document.cookie.replace(
       // eslint-disable-next-line no-useless-escape
       /(?:(?:^|.*;\s*)userToken\s*\=\s*([^;]*).*$)|^.*$/,
@@ -143,7 +143,7 @@ export default {
   methods: {
     putOrder() {
       const vm = this;
-      const putOrder = `${process.env.VUE_APP_APIPATH}api/Orders/61`;
+      const putOrder = `${process.env.VUE_APP_APIPATH}api/Orders/${vm.orderID}`;
       const orderDetail = vm.$qs.stringify(vm.personalDetail);
       const config = {
         method: 'put',
@@ -157,7 +157,7 @@ export default {
       vm.axios(config)
         .then((response) => {
           console.log(response);
-          this.$router.push('/Mypage/Seller');
+          this.$router.push('/Mypage/Buyer');
         })
         .catch((error) => {
           console.log(error);

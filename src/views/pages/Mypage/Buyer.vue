@@ -9,7 +9,7 @@
     <div class="deco03">
       <img src="/image/buyer.png" alt="" class="buyer_icon" />
     </div>
-    <ul class="buying_content">
+    <ul class="buying_content" v-if="orderNum>0">
       <li class="buying_list_opened" v-for="(order, key) in orders" :key="order.Id"
       @click="getIndex(key)"
       >
@@ -82,8 +82,11 @@
         </div>
       </li>
     </ul>
-    <ul class="buying_content"></ul>
-    <ul class="editor_content"></ul>
+    <ul class="buying_content" v-if="orderNum===0">
+      <li class="nodetail_buyer">
+        <img src="/image/dodetail-buy.png" alt="">
+      </li>
+    </ul>
     <buyerdetail :buyerdata="orders[index]"></buyerdetail>
   </div>
 </template>
@@ -98,6 +101,7 @@ export default {
       token: '',
       id: '',
       orders: '',
+      orderNum: '',
       buyers: '',
       myOrder: '',
       expand: true,
@@ -141,6 +145,7 @@ export default {
       .then((res) => {
         console.log(res);
         vm.orders = res.data;
+        vm.orderNum = res.data.length;
         // 買家ID拿 所有買家吉賣家列表
       })
       .catch((err) => {
@@ -295,5 +300,15 @@ export default {
     top: 0px;
     left: -10px;
   }
+}
+.nodetail_buyer {
+  display: flex;
+  justify-content: center;
+  img {
+    width: 0%;
+  }
+}
+.vue-star-rating-star[data-v-fde73a0c] {
+  width: 28px;
 }
 </style>

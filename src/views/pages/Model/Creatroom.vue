@@ -19,6 +19,7 @@
            <vue-core-image-upload
             class="room_photo-uploadBTN"
             :crop="false"
+            :credentials="false"
             @imageuploaded="imageuploaded"
             :max-file-size="5242880"
             url="https://miubuy.rocket-coding.com/api/UpLoadFile" >
