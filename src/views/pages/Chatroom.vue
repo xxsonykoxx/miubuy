@@ -27,7 +27,7 @@
         <ul class="btn-area" v-if="myUserID === hostID">
           <li class="aaa" @click="openModal()">編輯</li>
           <li>廣告刊登</li>
-          <li class="close_chatBTN" @click="closeRoom" v-if="closeroom">關店</li>
+          <li class="close_chatBTN" @click="closeRoom">關店</li>
         </ul>
       </div>
       <div class="chatroom_content">
@@ -51,7 +51,7 @@
               </div>
             </div>
           </div>
-          <h3 v-if="buyerInroom<1">等待買家進入 ... (´・∀・｀)</h3>
+          <h3 v-if="buyerInroom<1">等待對方進入 ... (´・∀・｀)</h3>
   <!--買家畫面 ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆ -->
    <ul v-if="myUserID !== hostID">
      <li class="order text" v-for="item in Details" :key="item.Id">
@@ -115,7 +115,9 @@
                 <template v-if="msg.SenderId !== Number(myUserID)">
                   <div class="massage-user" :key="key">
                   <h3>
-                    <div class="user-photo"></div>
+                    <div class="user-photo"
+                    :style="{'background-image': `url(${profileIMG_buyer})`}"
+                    ></div>
                     <span class="user-message">
                      {{msg.Message}}
                     </span> <span class="submit-time">{{msg.MsgTime}}</span>
@@ -128,7 +130,8 @@
                       <span class="submit-time">{{msg.MsgTime}}</span><span class="to-user-message">
                       {{msg.Message}}
                       </span>
-                      <div class="to-user-photo"></div>
+                      <div class="to-user-photo"
+                      :style="{'background-image': `url(${profileIMG})`}"></div>
                     </h3>
                 </div>
                 </template>
@@ -182,7 +185,7 @@ export default {
         SenderId: '',
         RecipientId: '',
         RoomId: '',
-        Message: '(´・ω・｀)テスト',
+        Message: '',
       },
       chatHistory: [],
       Details: [],
@@ -199,7 +202,6 @@ export default {
       token: '',
       roomID: '',
       roomInfo: '',
-      closeroom: true,
       myUserID: '',
       hostID: '',
       loading: false,
@@ -213,6 +215,8 @@ export default {
       sellerChecked: false,
       checkoutBTN: false,
       getOrderID: '',
+      profileIMG_buyer: '',
+      profileIMG: '',
     };
   },
   components: {
@@ -258,21 +262,21 @@ export default {
         console.log(log);
       });
       this.proxy.on('joinRoom', (userId, roomId) => {
+        console.log(userId, roomId);
         if (Number(vm.hostID) === userId) {
           vm.sellerInroom += 1;
-          console.log(`賣家進房，人數${this.sellerInroom}人`);
-          // 賣家進入 不做事
+          console.log('出品者いらっしゃいました！');
         } else {
-          // 買家進入
+          console.log('購入者いらっしゃいました！');
           vm.buyerID = userId;
           vm.buyerInroom += 1;
-          // console.log(userId);
-          // console.log(`賣家進房，人數${this.buyerInroom}人`);
+          // 取得使用者 ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
+          this.proxy.invoke('GetRoomUsers', Number(vm.roomID));
           // 取得歷史訊息 ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
           vm.proxy.invoke('MessageHistory', {
-            SenderId: userId,
+            SenderId: Number(userId),
             RecipientId: Number(vm.hostID),
-            RoomId: roomId,
+            RoomId: Number(roomId),
           });
           // 取得暫存訂單 ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
           vm.proxy.invoke('ReadDetail', userId, roomId);
@@ -289,30 +293,62 @@ export default {
       // 收訂單  ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
       this.proxy.on('detail', (details) => {
         vm.Details = details;
-        // console.log(details);
       });
       this.proxy.on('getRoomUsers', (res) => {
-        console.log(res);
+        if (Number(this.myUserID) === res.Id) {
+          vm.profileIMG_buyer = res.SellerPicture;
+          vm.profileIMG = res.Picture;
+        }
+        if (Number(this.myUserID) !== res.Id) {
+          vm.profileIMG_buyer = res.Picture;
+          vm.profileIMG = res.SellerPicture;
+        }
+
         if (res.Status === '訂單確認') {
           vm.sellerChecked = true;
         }
         if (res.Status === '訂單送出') {
           vm.checkoutBTN = true;
           vm.getOrderID = res.OrderId;
-          console.log('訂單送出', vm.getOrderID);
         }
+      });
+      this.proxy.on('chked', () => {
+        Swal.fire({
+          title: '★賣家已經去結帳囉( ^ω^ )★',
+          text: '若要交易請開新賣場🥺 個人頁面可以查看訂單💕',
+          icon: 'warning',
+          showDenyButton: false,
+          showCancelButton: false,
+          reverseButtons: true,
+          confirmButtonText: '卍 關 卍',
+        }).then((res) => {
+          if (res.isConfirmed) {
+            const closeAPI = `${process.env.VUE_APP_APIPATH}api/Rooms/${this.roomID}`;
+            const config = {
+              method: 'delete',
+              url: closeAPI,
+              headers: {
+                Authorization: `Bearer ${this.token}`,
+                'Content-Type': 'application/x-www-form-urlencoded',
+              },
+            };
+            this.axios(config)
+              .then((response) => {
+                console.log(response);
+                this.$router.push('/ChatroomList');
+              });
+          }
+        });
       });
       hub
         .start()
         .done(() => {
-          console.log('連線成功(´・ω・)！');
-          console.log(Number(this.roomID));
+          console.log('繋がりました(´・ω・)！');
           // 加入房間 ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
           this.proxy.invoke('JoinRoom', this.myUserID, Number(this.roomID));
-          this.proxy.invoke('GetRoomUsers', Number(this.roomID));
         })
         .fail(() => {
-          console.log('連線失敗');
+          console.log('繋がりませんでした(´・ω・)');
         });
       // 開始監聽
     },
@@ -331,7 +367,6 @@ export default {
     },
     sendMessage() {
     // 聊天訊息傳送 ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
-      console.log('発信！！！！');
       if (Number(this.chat.SenderId) === Number(this.hostID)) {
         this.chat.RecipientId = Number(this.buyerID);
       } else {
@@ -419,6 +454,7 @@ export default {
     },
     sendOrder() {
       this.$router.push(`/Checkout/${this.getOrderID}`);
+      this.proxy.invoke('Chked', Number(this.roomID));
     },
     buyerExitRoom() {
       if (this.myUserID !== this.hostID) {
@@ -494,9 +530,6 @@ export default {
       .then((res) => {
         vm.roomInfo = res.data;
         vm.hostID = String(vm.roomInfo.Seller[0].Id);
-        if (vm.roomInfo.users.length >= 1) {
-          vm.closeroom = false;
-        }
         this.chat.RoomId = Number(this.roomID);
         this.chat.SenderId = Number(this.myUserID);
         this.initData();

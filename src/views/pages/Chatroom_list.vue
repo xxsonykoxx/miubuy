@@ -5,7 +5,6 @@
         <div class="select_group">
           <select class="select_country"
           v-model="prefectureSelected"
-          @change="getCity()"
           >
             <option selected>{{prefectureName}}</option>
             <option v-for="prefecture in prefectures" :key="prefecture.Id"
@@ -197,17 +196,6 @@ export default {
     document.body.className = 'chatroomlist_BGI';
   },
   methods: {
-    getCity() {
-      const vm = this;
-      const APIcity = `${process.env.VUE_APP_APIPATH}api/Cities/${this.prefectureSelected}`;
-      vm.axios.get(APIcity)
-        .then((res) => {
-          vm.citys = res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    },
     getID(roomId) {
       const roomUserAPI = `${process.env.VUE_APP_APIPATH}api/RoomUsers`;
       const roomUser = this.$qs.stringify({

@@ -64,6 +64,10 @@
         </div>
       </div>
       <div class="buyer-modal-footer">
+        <button class="confirmBTN"
+        @click="completeOrder"
+        v-if="completeBTN"
+        >完成交易</button>
         <button class="closemodale"
         @click="close">關閉</button>
       </div>
@@ -81,6 +85,7 @@ export default {
       token: '',
       rating: 0,
       add: true,
+      completeBTN: false,
     };
   },
   props: ['buyerdata'],
@@ -89,7 +94,38 @@ export default {
   components: {
     starRating,
   },
+  created() {
+    this.token = document.cookie.replace(
+      // eslint-disable-next-line no-useless-escape
+      /(?:(?:^|.*;\s*)userToken\s*\=\s*([^;]*).*$)|^.*$/,
+      '$1',
+    );
+    if (this.buyerdata.Status === '已發貨') {
+      this.completeBTN = true;
+    }
+  },
   methods: {
+    completeOrder() {
+      if (this.buyerdata.Status === '已發貨') {
+        const completeAPI = `${process.env.VUE_APP_APIPATH}api/Orders/${this.buyerdata.Id}`;
+        const completeData = this.$qs.stringify({
+          Status: 9,
+        });
+        const config = {
+          method: 'put',
+          url: completeAPI,
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          data: completeData,
+        };
+        this.axios(config)
+          .then((res) => {
+            console.log(res);
+          });
+      }
+    },
     close() {
       $('.closemodale').click((e) => {
         e.preventDefault();

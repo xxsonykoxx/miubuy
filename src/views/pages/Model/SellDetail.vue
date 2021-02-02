@@ -16,7 +16,7 @@
             <div class="seller_room-photo"
             :style="{'background-image': `url(${sellerdata.RoomPicture})`}"
             ></div>
-            <h2 class="seller-detail_seller">賣家：<span>{{sellerdata.SellerNickname}}</span></h2>
+            <h2 class="seller-detail_seller">買家：<span>{{sellerdata.BuyerNickname}}</span></h2>
             <h2 class="seller-detail_price">訂單金額：<span>$ {{sellerdata.TotalPrice}}</span></h2>
             <ul class="seller-detail-left">
               <li class="seller-detail_detail">
@@ -47,23 +47,27 @@
           <div class="line005"></div>
           <div class="seller-detail_review">
             <h2>給賣家的評價</h2>
-            <button class="reviewBTN"
-            v-if="add"
-            @click="doReview"
-            >評價買家</button>
-            <div class="review-content" v-else>
-              <div class="flex">
-                <star-rating v-model="rating"></star-rating>
-                <i class="far fa-check-circle"></i>
+            <div v-if="isReview">
+              <button class="reviewBTN"
+              v-if="add"
+              @click="doReview"
+              >評價買家</button>
+              <div class="review-content" v-else>
+                <div class="flex">
+                  <star-rating v-model="rating"></star-rating>
+                  <i class="far fa-check-circle" @click="sendReview"></i>
+                </div>
+                <h2 class="toSeller-comment">留言：
+                  <input type="text" class="review-text" v-model="comment">
+                </h2>
               </div>
-              <h2 class="toSeller-comment">留言：
-                <input type="text" class="review-text">
-              </h2>
             </div>
           </div>
         </div>
       </div>
       <div class="seller-modal-footer">
+        <button class="confirmBTN"
+        @click="confirmOrder">確認發貨</button>
         <button class="closemodale"
         @click="close">關閉</button>
       </div>
@@ -81,6 +85,8 @@ export default {
       token: '',
       rating: 0,
       add: true,
+      comment: '',
+      isReview: true,
     };
   },
   props: ['sellerdata'],
@@ -88,6 +94,13 @@ export default {
   },
   components: {
     starRating,
+  },
+  created() {
+    this.token = document.cookie.replace(
+      // eslint-disable-next-line no-useless-escape
+      /(?:(?:^|.*;\s*)userToken\s*\=\s*([^;]*).*$)|^.*$/,
+      '$1',
+    );
   },
   methods: {
     close() {
@@ -99,11 +112,51 @@ export default {
     doReview() {
       this.add = !this.add;
     },
+    confirmOrder() {
+      const confirmAPI = `${process.env.VUE_APP_APIPATH}api/Orders/${this.sellerdata.Id}`;
+      const confirmData = this.$qs.stringify({
+        Status: 6,
+      });
+      const config = {
+        method: 'put',
+        url: confirmAPI,
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        data: confirmData,
+      };
+      this.axios(config)
+        .then((res) => {
+          console.log(res);
+        });
+    },
+    sendReview() {
+      const reviewAPI = `${process.env.VUE_APP_APIPATH}api/Ratings/${this.sellerdata.Id}`;
+      const reviewData = this.$qs.stringify({
+        BuyerStar: this.rating,
+        BuyerReviews: this.comment,
+      });
+      const config = {
+        method: 'put',
+        url: reviewAPI,
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        data: reviewData,
+      };
+      this.axios(config)
+        .then((res) => {
+          console.log(res);
+        });
+    },
   },
 };
 </script>
 
 <style lang="scss">
+$color_ribon: rgb(204,104,116);
 @import '@/assets/scss/color.scss';
 @import '@/assets/scss/_sellerDetail.scss';
 .reviewBTN {
@@ -142,6 +195,13 @@ export default {
     &:hover {
       color:$colorBrown;
     }
+  }
+}
+.confirmBTN {
+  background-color: $color_ribon !important;
+  width: 100px !important;
+  &:hover {
+    background-color: darken($color_ribon, 10%)!important;
   }
 }
 </style>

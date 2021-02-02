@@ -305,7 +305,7 @@ export default {
   display: flex;
   justify-content: center;
   img {
-    width: 0%;
+    width: 50%;
   }
 }
 .vue-star-rating-star[data-v-fde73a0c] {

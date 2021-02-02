@@ -68,6 +68,7 @@ export default {
       vm.myinfo.email = user.Email;
       vm.myinfo.phone = user.Phone;
       vm.myinfo.photo = user.Picture;
+      localStorage.setItem('profileIMG', user.Picture);
     });
   },
   mounted() {

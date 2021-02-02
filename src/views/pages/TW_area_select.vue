@@ -118,7 +118,7 @@ export default {
   },
   created() {
     const vm = this;
-    const APIprefectures = `${process.env.VUE_APP_APIPATH}api/Counties/2`;
+    const APIprefectures = `${process.env.VUE_APP_APIPATH}api/Counties/3`;
     this.axios.get(APIprefectures)
       .then((res) => {
         vm.prefectures = res.data;
@@ -140,7 +140,7 @@ export default {
       const storage = sessionStorage;
       storage.setItem('prefecture', this.prefectureSelected);
       storage.setItem('city', this.citySelected);
-      storage.setItem('Countries', '2');
+      storage.setItem('Countries', '3');
       if (this.prefectureSelected !== '' || this.citySelected !== '') {
         this.$router.push('/ChatroomList');
       } else {

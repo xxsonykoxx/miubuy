@@ -315,6 +315,7 @@ $color_ribon: rgb(204,104,116);
 .messages {
   height: 390px;
   overflow-y: scroll;
+  overflow-x: hidden;
 }
 .massage-user {
   padding: 10px;

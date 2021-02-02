@@ -85,6 +85,8 @@
 </template>
 
 <script>
+import Swal from 'sweetalert2';
+
 export default {
   data() {
     return {
@@ -110,12 +112,22 @@ export default {
 
       this.axios(config)
         .then((response) => {
-          console.log(response);
-          const userToken = response.data.token;
-          document.cookie = `userToken=${userToken}; path=/`;
-          localStorage.setItem('token', 'ImLogin');
-          localStorage.setItem('ID', response.data.Id);
-          this.$router.push('/');
+          if (response.data !== false) {
+            const userToken = response.data.token;
+            document.cookie = `userToken=${userToken}; path=/`;
+            localStorage.setItem('token', 'ImLogin');
+            localStorage.setItem('ID', response.data.Id);
+            this.$router.push('/');
+          }
+          if (response.data === false) {
+            Swal.fire({
+              position: 'center',
+              icon: 'error',
+              title: '帳號密碼錯誤 (´・ω・｀)',
+              showConfirmButton: false,
+              timer: 2500,
+            });
+          }
         })
         .catch((error) => {
           console.log(error);

@@ -109,6 +109,8 @@
 </template>
 
 <script>
+import Swal from 'sweetalert2';
+
 export default {
   data() {
     return {
@@ -157,7 +159,16 @@ export default {
       vm.axios(config)
         .then((response) => {
           console.log(response);
-          this.$router.push('/Mypage/Buyer');
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: '✨訂單送出成功( ´∀｀)✨',
+            showConfirmButton: false,
+            timer: 2500,
+          })
+            .then(() => {
+              this.$router.push('/Mypage/Buyer');
+            });
         })
         .catch((error) => {
           console.log(error);
