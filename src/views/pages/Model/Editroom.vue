@@ -35,7 +35,7 @@
             v-model="roomdata.CountryId"
             @change="getcounty()"
             >
-              <option value="" selected disabled>( ^ω^ )</option>
+              <!-- <option value="" selected disabled>( ^ω^ )</option> -->
             <option v-for="country in getCountry"
             :key="country.Id"
             :value="country.Id">{{country.Name}}</option>
@@ -127,25 +127,25 @@ export default {
       '$1',
     );
     /* ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆ Country ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆ */
-    const countryAPI = `${process.env.VUE_APP_APIPATH}api/Countries`;
+    const countryAPI = 'https://miubuy.rocket-coding.com/api/Countries';
     vm.axios.get(countryAPI)
       .then((res) => {
         vm.getCountry = res.data;
       });
     /* ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆ Country ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆ */
-    const countyAPI = `${process.env.VUE_APP_APIPATH}api/Counties`;
+    const countyAPI = 'https://miubuy.rocket-coding.com/api/Counties';
     vm.axios.get(countyAPI)
       .then((res) => {
         vm.getCounty = res.data;
       });
     /* ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆ City ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆ */
-    const cityAPI = `${process.env.VUE_APP_APIPATH}api/Cities`;
+    const cityAPI = 'https://miubuy.rocket-coding.com/api/Cities';
     vm.axios.get(cityAPI)
       .then((res) => {
         vm.getCity = res.data;
       });
     /* ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆ Tags ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆ */
-    const tagAPI = `${process.env.VUE_APP_APIPATH}api/Tags`;
+    const tagAPI = 'https://miubuy.rocket-coding.com/api/Tags';
     vm.axios.get(tagAPI)
       .then((res) => {
         vm.getTags = res.data;
@@ -172,7 +172,7 @@ export default {
     },
     getcounty() {
       const vm = this;
-      const countyAPI = `${process.env.VUE_APP_APIPATH}api/Counties/${vm.roomdata.CountryId}`;
+      const countyAPI = `https://miubuy.rocket-coding.com/api/Counties/${vm.roomdata.CountryId}`;
       vm.axios.get(countyAPI)
         .then((res) => {
           vm.getCounty = res.data;
@@ -183,7 +183,7 @@ export default {
     },
     getcity() {
       const vm = this;
-      const cityAPI = `${process.env.VUE_APP_APIPATH}api/Cities/${vm.roomdata.CountyId}`;
+      const cityAPI = `https://miubuy.rocket-coding.com/api/Cities/${vm.roomdata.CountyId}`;
       vm.axios.get(cityAPI)
         .then((res) => {
           vm.getCity = res.data;
@@ -194,7 +194,7 @@ export default {
     },
     putRoomInfo() {
       const vm = this;
-      const putRoomAPI = `${process.env.VUE_APP_APIPATH}api/Rooms/${vm.roomdata.Id}`;
+      const putRoomAPI = `https://miubuy.rocket-coding.com/api/Rooms/${vm.roomdata.Id}`;
       const newroomDetail = vm.$qs.stringify({
         MaxUsers: vm.roomdata.MaxUsers,
         Name: vm.roomdata.Name,

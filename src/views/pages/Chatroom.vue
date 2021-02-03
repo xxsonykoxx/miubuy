@@ -109,8 +109,9 @@
         </div>
         <div class="chat-area">
           <div class="message_area">
+<!--聊天室 ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆ -->
 <!-- eslint-disable-next-line vue/require-v-for-key -->
-            <div class="messages">
+            <div class="messages" id="scrollMSG">
               <template v-for="(msg, key) in chatHistory">
                 <template v-if="msg.SenderId !== Number(myUserID)">
                   <div class="massage-user" :key="key">
@@ -142,7 +143,9 @@
             <a class="update-photo">
               <i class="fas fa-images"></i>
             </a>
-            <input type="text" class="text-area" v-model="chat.Message">
+            <input type="text" class="text-area"
+            v-model="chat.Message"
+            @keypress.enter="sendMessage">
             <a class="submit_BTN" @click="sendMessage">
              <i class="far fa-comment-alt"></i>
             </a>
@@ -232,6 +235,10 @@ export default {
       $('.modale').removeClass('opened');
     });
   },
+  updated() {
+    const ele = document.getElementById('scrollMSG');
+    ele.scrollTop = ele.scrollHeight;
+  },
   beforeCreate() {
     document.body.className = 'chatroom_BGI';
   },
@@ -243,8 +250,6 @@ export default {
       });
       return totalPrice;
     },
-  },
-  updated() {
   },
   methods: {
     initData() {
@@ -323,7 +328,7 @@ export default {
           confirmButtonText: '卍 關 卍',
         }).then((res) => {
           if (res.isConfirmed) {
-            const closeAPI = `${process.env.VUE_APP_APIPATH}api/Rooms/${this.roomID}`;
+            const closeAPI = `https://miubuy.rocket-coding.com/api/Rooms/${this.roomID}`;
             const config = {
               method: 'delete',
               url: closeAPI,
@@ -402,7 +407,7 @@ export default {
       this.proxy.invoke('CheckOrder', this.roomID);
     },
     SellerCheckorder() {
-      const API = `${process.env.VUE_APP_APIPATH}api/Orders`;
+      const API = 'https://miubuy.rocket-coding.com/api/Orders';
       const OrderDetails = this.$qs.stringify({
         BuyerId: this.buyerID,
         RoomId: Number(this.roomID),
@@ -435,7 +440,7 @@ export default {
         confirmButtonText: 'YES',
       }).then((res) => {
         if (res.isConfirmed) {
-          const closeAPI = `${process.env.VUE_APP_APIPATH}api/Rooms/${this.roomID}`;
+          const closeAPI = `https://miubuy.rocket-coding.com/api/Rooms/${this.roomID}`;
           const config = {
             method: 'delete',
             url: closeAPI,
@@ -468,7 +473,7 @@ export default {
           confirmButtonText: 'YES',
         }).then((res) => {
           if (res.isConfirmed) {
-            const exitAPI = `${process.env.VUE_APP_APIPATH}api/RoomUsers/${this.roomID}`;
+            const exitAPI = `https://miubuy.rocket-coding.com/api/RoomUsers/${this.roomID}`;
             const config = {
               method: 'delete',
               url: exitAPI,
@@ -490,7 +495,7 @@ export default {
     },
     /* TEST ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆ */
     getOrder() {
-      // const API = `${process.env.VUE_APP_APIPATH}api/Orders`;
+      // const API = `https://miubuy.rocket-coding.com/api/Orders`;
       const aaa = this.$qs.stringify({});
       const config = {
         method: 'get',
@@ -525,7 +530,7 @@ export default {
     vm.myUserID = localStorage.getItem('ID');
     vm.roomID = vm.$route.params.Id;
     localStorage.setItem('roomID', vm.roomID);
-    const roomAPI = `${process.env.VUE_APP_APIPATH}api/Rooms/${vm.roomID}`;
+    const roomAPI = `https://miubuy.rocket-coding.com/api/Rooms/${vm.roomID}`;
     vm.axios.get(roomAPI)
       .then((res) => {
         vm.roomInfo = res.data;
@@ -569,4 +574,5 @@ export default {
   background-color: rgb(228, 157, 157);
   font-size: 20px;
 }
+::-webkit-scrollbar {display:none}
 </style>

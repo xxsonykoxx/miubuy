@@ -141,13 +141,13 @@ export default {
     /* ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆ */
     const vm = this;
     /* ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆ */
-    const countryAPI = `${process.env.VUE_APP_APIPATH}api/Countries`;
+    const countryAPI = 'https://miubuy.rocket-coding.com/api/Countries';
     vm.axios.get(countryAPI)
       .then((res) => {
         vm.getCountry = res.data;
       });
     /* ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆ */
-    const tagAPI = `${process.env.VUE_APP_APIPATH}api/Tags`;
+    const tagAPI = 'https://miubuy.rocket-coding.com/api/Tags';
     vm.axios.get(tagAPI)
       .then((res) => {
         vm.getTags = res.data;
@@ -170,7 +170,7 @@ export default {
     },
     getcounty() {
       const vm = this;
-      const countyAPI = `${process.env.VUE_APP_APIPATH}api/Counties/${vm.roomInfo.CountryId}`;
+      const countyAPI = `https://miubuy.rocket-coding.com/api/Counties/${vm.roomInfo.CountryId}`;
       vm.axios.get(countyAPI)
         .then((res) => {
           vm.getCounty = res.data;
@@ -181,7 +181,7 @@ export default {
     },
     getcity() {
       const vm = this;
-      const cityAPI = `${process.env.VUE_APP_APIPATH}api/Cities/${vm.roomInfo.CountyId}`;
+      const cityAPI = `https://miubuy.rocket-coding.com/api/Cities/${vm.roomInfo.CountyId}`;
       vm.axios.get(cityAPI)
         .then((res) => {
           vm.getCity = res.data;
@@ -192,7 +192,7 @@ export default {
     },
     creatRoom() {
       const vm = this;
-      const roomsAPI = `${process.env.VUE_APP_APIPATH}api/Rooms`;
+      const roomsAPI = 'https://miubuy.rocket-coding.com/api/Rooms';
       const roomDetail = this.$qs.stringify(this.roomInfo);
       const config = {
         method: 'post',

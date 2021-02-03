@@ -54,10 +54,11 @@
             <div class="review-content" v-else>
               <div class="flex">
                 <star-rating v-model="rating"></star-rating>
-                <i class="far fa-check-circle"></i>
+                <i class="far fa-check-circle" @click="sendReview"></i>
               </div>
               <h2 class="toSeller-comment">留言：
-                <input type="text" class="review-text">
+                <input type="text" class="review-text"
+                v-model="comment">
               </h2>
             </div>
           </div>
@@ -76,6 +77,7 @@
 </template>
 
 <script>
+import Swal from 'sweetalert2';
 import starRating from 'vue-star-rating';
 import $ from '../../../../node_modules/jquery';
 
@@ -85,6 +87,7 @@ export default {
       token: '',
       rating: 0,
       add: true,
+      comment: '',
       completeBTN: false,
     };
   },
@@ -107,7 +110,7 @@ export default {
   methods: {
     completeOrder() {
       if (this.buyerdata.Status === '已發貨') {
-        const completeAPI = `${process.env.VUE_APP_APIPATH}api/Orders/${this.buyerdata.Id}`;
+        const completeAPI = `https://miubuy.rocket-coding.com/api/Orders/${this.buyerdata.Id}`;
         const completeData = this.$qs.stringify({
           Status: 9,
         });
@@ -125,6 +128,37 @@ export default {
             console.log(res);
           });
       }
+    },
+    sendReview() {
+      const reviewAPI = `https://miubuy.rocket-coding.com/api/Ratings/${this.buyerdata.Id}`;
+      const reviewData = this.$qs.stringify({
+        SellerStar: this.rating,
+        SellerReviews: this.comment,
+      });
+      const config = {
+        method: 'put',
+        url: reviewAPI,
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        data: reviewData,
+      };
+      this.axios(config)
+        .then((res) => {
+          console.log(res);
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: '評價成功送出 (´・ω・｀)',
+            showConfirmButton: false,
+            timer: 2500,
+          })
+            .then(() => {
+              this.$router.push('/Mypage/Buyer');
+              window.location.reload();
+            });
+        });
     },
     close() {
       $('.closemodale').click((e) => {

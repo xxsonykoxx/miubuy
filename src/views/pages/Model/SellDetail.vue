@@ -113,7 +113,7 @@ export default {
       this.add = !this.add;
     },
     confirmOrder() {
-      const confirmAPI = `${process.env.VUE_APP_APIPATH}api/Orders/${this.sellerdata.Id}`;
+      const confirmAPI = `https://miubuy.rocket-coding.com/api/Orders/${this.sellerdata.Id}`;
       const confirmData = this.$qs.stringify({
         Status: 6,
       });
@@ -132,7 +132,7 @@ export default {
         });
     },
     sendReview() {
-      const reviewAPI = `${process.env.VUE_APP_APIPATH}api/Ratings/${this.sellerdata.Id}`;
+      const reviewAPI = `https://miubuy.rocket-coding.com/api/Ratings/${this.sellerdata.Id}`;
       const reviewData = this.$qs.stringify({
         BuyerStar: this.rating,
         BuyerReviews: this.comment,

@@ -132,7 +132,7 @@ export default {
       /(?:(?:^|.*;\s*)userToken\s*\=\s*([^;]*).*$)|^.*$/,
       '$1',
     );
-    const buyerAPI = `${process.env.VUE_APP_APIPATH}api/BuyerRatings`;
+    const buyerAPI = 'https://miubuy.rocket-coding.com/api/BuyerRatings';
     const config = {
       method: 'get',
       url: buyerAPI,

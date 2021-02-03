@@ -145,7 +145,7 @@ export default {
   methods: {
     putOrder() {
       const vm = this;
-      const putOrder = `${process.env.VUE_APP_APIPATH}api/Orders/${vm.orderID}`;
+      const putOrder = `https://miubuy.rocket-coding.com/api/Orders/${vm.orderID}`;
       const orderDetail = vm.$qs.stringify(vm.personalDetail);
       const config = {
         method: 'put',

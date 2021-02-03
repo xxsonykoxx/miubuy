@@ -69,7 +69,7 @@ export default {
       this.loading = true;
     }, 1500);
     const vm = this;
-    const API = `${process.env.VUE_APP_APIPATH}api/Countries`;
+    const API = 'https://miubuy.rocket-coding.com/api/Countries';
     vm.axios.get(API)
       .then((res) => {
         vm.countries = res.data;

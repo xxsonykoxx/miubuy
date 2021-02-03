@@ -344,7 +344,7 @@
     overflow-y: scroll;
   }
 }
-
+::-webkit-scrollbar {display:none}
 //☆=========== 分頁 ==========☆
 .pagination {
   position: relative;

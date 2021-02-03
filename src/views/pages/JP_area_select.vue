@@ -97,7 +97,7 @@
 </template>
 
 <script>
-import Swal from 'sweetalert2';
+// import Swal from 'sweetalert2';
 import creatroom from './Model/Creatroom.vue';
 
 export default {
@@ -116,7 +116,7 @@ export default {
   },
   created() {
     const vm = this;
-    const APIprefectures = `${process.env.VUE_APP_APIPATH}api/Counties/2`;
+    const APIprefectures = 'https://miubuy.rocket-coding.com/api/Counties/2';
     this.axios.get(APIprefectures)
       .then((res) => {
         vm.prefectures = res.data;
@@ -125,7 +125,7 @@ export default {
   methods: {
     getCity() {
       const vm = this;
-      const APIcity = `${process.env.VUE_APP_APIPATH}api/Cities/${this.prefectureSelected}`;
+      const APIcity = `https://miubuy.rocket-coding.com/api/Cities/${this.prefectureSelected}`;
       vm.axios.get(APIcity)
         .then((res) => {
           vm.citys = res.data;
@@ -139,17 +139,7 @@ export default {
       storage.setItem('prefecture', this.prefectureSelected);
       storage.setItem('city', this.citySelected);
       storage.setItem('Countries', '2');
-      if (this.prefectureSelected !== '' || this.citySelected !== '') {
-        this.$router.push('/ChatroomList');
-      } else {
-        Swal.fire({
-          position: 'center',
-          icon: 'error',
-          title: '請選擇地區 (´・ω・｀)',
-          showConfirmButton: false,
-          timer: 2000,
-        });
-      }
+      this.$router.push('/ChatroomList');
     },
     getNowstatus() {
       const vm = this;

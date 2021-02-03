@@ -33,6 +33,7 @@
               type="password"
               class="login--password"
               v-model="user.Password"
+              @keyup.enter="login"
             />
           </div>
         </div>
@@ -40,7 +41,7 @@
           <input type="checkbox" />
           <span>記住我</span>
         </h3>
-        <h5 class="login_btn" @click="login" @keyup.enter="login">
+        <h5 class="login_btn" @click="login">
           <router-link to="">登入</router-link>
         </h5>
       </form>
@@ -99,7 +100,7 @@ export default {
   created() {},
   methods: {
     login() {
-      const API = `${process.env.VUE_APP_APIPATH}api/Login`;
+      const API = 'https://miubuy.rocket-coding.com/api/Login';
       const user = this.$qs.stringify(this.user);
       const config = {
         method: 'post',

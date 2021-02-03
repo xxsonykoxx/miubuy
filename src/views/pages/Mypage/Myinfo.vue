@@ -103,7 +103,7 @@ export default {
       /(?:(?:^|.*;\s*)userToken\s*\=\s*([^;]*).*$)|^.*$/,
       '$1',
     );
-    const myAPI = `${process.env.VUE_APP_APIPATH}api/Users/${this.id}`;
+    const myAPI = `https://miubuy.rocket-coding.com/api/Users/${this.id}`;
     this.axios.defaults.headers.common.Authorization = `Bearer ${vm.token}`;
     this.axios.get(myAPI).then((res) => {
       console.log(res);
@@ -135,7 +135,7 @@ export default {
       });
       const config = {
         method: 'put',
-        url: `${process.env.VUE_APP_APIPATH}api/Users/${this.id}`,
+        url: `https://miubuy.rocket-coding.com/api/Users/${this.id}`,
         headers: {
           Authorization: `Bearer ${vm.token}`,
           'Content-Type': 'application/x-www-form-urlencoded',

@@ -5,6 +5,7 @@
         <div class="select_group">
           <select class="select_country"
           v-model="prefectureSelected"
+          @change="getCity()"
           >
             <option selected>{{prefectureName}}</option>
             <option v-for="prefecture in prefectures" :key="prefecture.Id"
@@ -19,7 +20,8 @@
             <option v-for="city in citys" :key="city.Id"
                   :value="city.Id">{{city.Name}}</option>
           </select>
-          <input type="button" value="GO★" class="re-select_btn" />
+          <input type="button" value="GO★" class="re-select_btn"
+          @click="searchArea" />
         </div>
       </div>
       <!--☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆-->
@@ -56,6 +58,7 @@
           <ul class="tags">
             <li class="tag tag-color" v-for="tag in tags" :key="tag.Id"
             :style="{'background-color': tag.Color}"
+            @click="tagSearch(tag.Id)"
             >
               {{tag.Name}}
             </li>
@@ -187,6 +190,8 @@ export default {
       isFull: false,
       myUserID: '',
       loading: false,
+      county: '',
+      city: '',
     };
   },
   components: {
@@ -196,8 +201,43 @@ export default {
     document.body.className = 'chatroomlist_BGI';
   },
   methods: {
+    tagSearch(id) {
+      const vm = this;
+      const nowCountry = vm.country;
+      const API = 'https://miubuy.rocket-coding.com/api/SelectRooms';
+      const search = vm.$qs.stringify({
+        TagId: id,
+        CountryId: nowCountry,
+      });
+      const roomsConfig = {
+        method: 'post',
+        url: API,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        data: search,
+      };
+      vm.axios(roomsConfig)
+        .then((res) => {
+          vm.rooms = res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    getCity() {
+      const vm = this;
+      const APIcity = `https://miubuy.rocket-coding.com/api/Cities/${this.prefectureSelected}`;
+      vm.axios.get(APIcity)
+        .then((res) => {
+          vm.citys = res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
     getID(roomId) {
-      const roomUserAPI = `${process.env.VUE_APP_APIPATH}api/RoomUsers`;
+      const roomUserAPI = 'https://miubuy.rocket-coding.com/api/RoomUsers';
       const roomUser = this.$qs.stringify({
         Id: roomId,
         Name: '假資料',
@@ -227,6 +267,30 @@ export default {
           });
         });
     },
+    searchArea() {
+      const vm = this;
+      const roomsAPI = 'https://miubuy.rocket-coding.com/api/SelectRooms';
+      const selectroom = vm.$qs.stringify({
+        CountryId: vm.country,
+        CountyId: vm.prefectureSelected,
+        CityId: vm.citySelected,
+      });
+      const roomsConfig = {
+        method: 'post',
+        url: roomsAPI,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        data: selectroom,
+      };
+      vm.axios(roomsConfig)
+        .then((res) => {
+          vm.rooms = res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
   },
   created() {
     this.myUserID = localStorage.getItem('ID');
@@ -244,30 +308,10 @@ export default {
     /* ☆…☆…☆…☆…☆…☆ 區域篩選API ☆…☆…☆…☆…☆…☆ */
     const country = sessionStorage.getItem('Countries');
     vm.country = sessionStorage.getItem('Countries');
-    const APIprefectures = `${process.env.VUE_APP_APIPATH}api/Counties/${country}`;
-    const APIcity = `${process.env.VUE_APP_APIPATH}api/Cities/${this.prefectureSelected}`;
-    if (country === '1') {
-      vm.axios.get(APIprefectures)
-        .then((res) => {
-          vm.prefectures = res.data;
-          vm.prefectureSelected = sessionStorage.getItem('prefecture');
-          vm.prefectures.forEach((i) => {
-            if (i.Id === vm.prefectureSelected) {
-              vm.prefectureName = i.Name;
-            }
-          });
-        });
-      vm.axios.get(APIcity)
-        .then((res) => {
-          vm.citys = res.data;
-          vm.citySelected = sessionStorage.getItem('city');
-          vm.citys.forEach((i) => {
-            if (i.id === vm.citySelected) {
-              vm.cityName = i.Name;
-            }
-          });
-        });
-    }
+    vm.county = sessionStorage.getItem('prefecture');
+    vm.city = sessionStorage.getItem('city');
+    const APIprefectures = `https://miubuy.rocket-coding.com/api/Counties/${country}`;
+    const APIcity = `https://miubuy.rocket-coding.com/api/Cities/${this.prefectureSelected}`;
     if (country === '2') {
       vm.axios.get(APIprefectures)
         .then((res) => {
@@ -290,8 +334,30 @@ export default {
           });
         });
     }
+    if (country === '3') {
+      vm.axios.get(APIprefectures)
+        .then((res) => {
+          vm.prefectures = res.data;
+          vm.prefectureSelected = sessionStorage.getItem('prefecture');
+          vm.prefectures.forEach((i) => {
+            if (i.Id === vm.prefectureSelected) {
+              vm.prefectureName = i.Name;
+            }
+          });
+        });
+      vm.axios.get(APIcity)
+        .then((res) => {
+          vm.citys = res.data;
+          vm.citySelected = sessionStorage.getItem('city');
+          vm.citys.forEach((i) => {
+            if (i.id === vm.citySelected) {
+              vm.cityName = i.Name;
+            }
+          });
+        });
+    }
     /* ☆…☆…☆…☆…☆…☆ タグAPI ☆…☆…☆…☆…☆…☆ */
-    const tagAPI = `${process.env.VUE_APP_APIPATH}api/Tags`;
+    const tagAPI = 'https://miubuy.rocket-coding.com/api/Tags';
     vm.axios.get(tagAPI)
       .then((res) => {
         vm.tags = res.data;
@@ -300,9 +366,11 @@ export default {
         console.log(err);
       });
     /* ☆…☆…☆…☆…☆…☆ ROOM API ☆…☆…☆…☆…☆…☆ */
-    const roomsAPI = `${process.env.VUE_APP_APIPATH}api/SelectRooms`;
+    const roomsAPI = 'https://miubuy.rocket-coding.com/api/SelectRooms';
     const selectroom = vm.$qs.stringify({
       CountryId: vm.country,
+      CountyId: vm.county,
+      CityId: vm.city,
     });
     const roomsConfig = {
       method: 'post',

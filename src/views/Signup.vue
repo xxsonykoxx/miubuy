@@ -70,7 +70,6 @@
         <div class="email_group">
           <label for="" class="sign_email">信箱</label>
           <input type="email" class="email"
-          :rules="emailRules"
           required
           v-model="user_signup.Email" />
         </div>
@@ -195,7 +194,7 @@ export default {
       this.user_signup.Photo = `https://miubuy.rocket-coding.com/Img/${img}`;
     },
     signup() {
-      const API = `${process.env.VUE_APP_APIPATH}api/Users`;
+      const API = 'https://miubuy.rocket-coding.com/api/Users';
       const userSignUp = this.$qs.stringify({
         Account: this.user_signup.Account,
         Password: this.user_signup.Password,
@@ -229,10 +228,17 @@ export default {
         Swal.fire('請同意利用規約(´・ω・｀)');
       } else {
         this.axios(config)
-          .then((response) => {
-            console.log(response);
-            console.log(userSignUp);
-            this.$router.push('/');
+          .then(() => {
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: '註冊成功💌 請重新登入',
+              showConfirmButton: false,
+              timer: 2500,
+            })
+              .then(() => {
+                this.$router.push('/Login');
+              });
           })
           .catch((error) => {
             console.log(error);
@@ -292,7 +298,7 @@ body.signup {
   bottom: 5px;
   z-index: 99;
   color: #fff;
-  font-family: myfont, serif;
+  font-family: myfont, japanese-font, serif;
   span {
     font-size: 12px;
   }
@@ -419,7 +425,7 @@ body.signup {
   position: relative;
 }
 .sign_form_content {
-  font-family: myfont, serif;
+  font-family: myfont, japanese-font, serif;
   font-weight: lighter;
   position: absolute;
   padding: 20px;
@@ -444,7 +450,7 @@ body.signup {
     margin-bottom: 15px;
   }
   input {
-    font-family: myfont, serif;
+    font-family: myfont, japanese-font, serif;
     height: 28px;
     border: none;
     border-radius: 4px;
