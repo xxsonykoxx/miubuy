@@ -14,21 +14,22 @@
       @click="getIndex(key)"
       >
          <div class="expand-bar">
-          <img src="/image/star002.png" alt="" class="deco001 openmodale" @click="open"
+          <img src="/image/star002.png" alt="" class="deco001 openmodale"
+          @click="open(order.Status)"
           >
         </div>
         <div class="order_content">
           <div class="order_title">
             <a href="#" class="order_photo_link">
               <div class="order_photo openmodale"
-              @click="open"
+              @click="open(order.Status)"
               :style="{'background-image': `url(${order.RoomPicture})`}"
               ></div>
             </a>
             <h3 class="order_name">
               <img src="/stars.png" alt="" width="20px" />
               <a href="#" class="openmodale"
-               @click="open"
+               @click="open(order.Status)"
               >{{order.RoomName}}</a>
             </h3>
           </div>
@@ -54,7 +55,7 @@
                   width="24px"
                   class="title_deco"
                 />
-                訂單状態
+                訂單狀態
               </p>
               <p class="order_status">
                 {{order.Status}}
@@ -63,19 +64,15 @@
             <h3 class="review">
               <p class="review_title">
                 <img
-                  src="/image/ribon_icon.png"
+                  src="/image/cat_icon.png"
                   alt=""
                   width="28px"
                   class="title_deco"
                 />
-                評價
+                買家評價
               </p>
               <p class="order_review">
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
+                {{order.SellerStar}}
               </p>
             </h3>
           </div>
@@ -87,7 +84,9 @@
         <img src="/image/dodetail-sell.png" alt="">
       </li>
     </ul>
-    <sellerdetail :sellerdata="orders[index]"></sellerdetail>
+    <sellerdetail :sellerdata="orders[index]"
+    :status="status"
+    ></sellerdetail>
   </div>
 </template>
 
@@ -103,6 +102,7 @@ export default {
       orders: '',
       orderNum: '',
       index: '',
+      status: '',
     };
   },
   components: {
@@ -112,11 +112,11 @@ export default {
     getIndex(key) {
       this.index = key;
     },
-    open() {
-      $('.openmodale').click((e) => {
-        e.preventDefault();
+    open(i) {
+      this.status = i;
+      setTimeout(() => {
         $('.seller-modale').addClass('opened');
-      });
+      }, 500);
     },
   },
   created() {

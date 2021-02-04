@@ -45,13 +45,12 @@
               <select name="" v-model="roomInfo.CountyId"
               @change="getcity()"
               >
-                <option value="" selected disabled>☆彡</option>
+                <option value="1" selected>不選 ☆彡</option>
                 <option v-for="county in getCounty"
               :key="county.Id"
               :value="county.Id">{{county.Name}}</option>
               </select>
               <select name="" v-model="roomInfo.CityId">
-              <option value="" selected disabled>★彡</option>
               <option v-for="city in getCity"
               :key="city.Id"
               :value="city.Id">{{city.Name}}</option>
@@ -193,7 +192,18 @@ export default {
     creatRoom() {
       const vm = this;
       const roomsAPI = 'https://miubuy.rocket-coding.com/api/Rooms';
-      const roomDetail = this.$qs.stringify(this.roomInfo);
+      const roomDetail = this.$qs.stringify({
+        MaxUsers: Number(vm.roomInfo.MaxUsers),
+        Name: vm.roomInfo.Name,
+        Picture: vm.roomInfo.Picture,
+        CountryId: Number(vm.roomInfo.CountryId),
+        CountyId: Number(vm.roomInfo.CountyId),
+        CityId: Number(vm.roomInfo.CityId),
+        TagId: Number(vm.roomInfo.TagId),
+        Rule: vm.roomInfo.Rule,
+        R18: vm.roomInfo.R18,
+        TagText: vm.roomInfo.TagText,
+      });
       const config = {
         method: 'post',
         url: roomsAPI,

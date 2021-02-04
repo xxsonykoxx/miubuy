@@ -61,7 +61,6 @@ export default {
     const myAPI = `https://miubuy.rocket-coding.com/api/Users/${this.id}`;
     this.axios.defaults.headers.common.Authorization = `Bearer ${vm.token}`;
     this.axios.get(myAPI).then((res) => {
-      console.log(res);
       const user = res.data;
       vm.Account = user.Account;
       vm.myinfo.alias = user.Nickname;
@@ -127,7 +126,7 @@ export default {
       padding-left: 5px;
       padding-right: 5px;
       border-radius: 5px;
-      font-size: 14px;
+      font-size: 26px;
       &:hover {
         background-color: darken($colorHeader,5%);
         height: 100%;
@@ -135,7 +134,7 @@ export default {
     }
     a {
       font-family: myfont, japanese-font, serif !important;
-      font-size: 20px;
+      font-size: 24px;
       text-decoration: none;
       color: #fff;
       font-weight: lighter;

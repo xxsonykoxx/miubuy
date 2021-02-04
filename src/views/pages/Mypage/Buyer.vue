@@ -14,21 +14,22 @@
       @click="getIndex(key)"
       >
          <div class="expand-bar">
-          <img src="/image/star002.png" alt="" class="deco001 openmodale" @click="open"
+          <img src="/image/star002.png" alt="" class="deco001 openmodale"
+          @click="open(order.Status)"
           >
         </div>
         <div class="order_content">
           <div class="order_title">
             <a href="#" class="order_photo_link">
               <div class="order_photo openmodale"
-              @click="open"
+              @click="open(order.Status)"
               :style="{'background-image': `url(${order.RoomPicture})`}"
               ></div>
             </a>
             <h3 class="order_name">
               <img src="/stars.png" alt="" width="20px" />
               <a href="#" class="openmodale"
-               @click="open"
+               @click="open(order.Status)"
               >{{order.RoomName}}</a>
             </h3>
           </div>
@@ -54,7 +55,7 @@
                   width="24px"
                   class="title_deco"
                 />
-                訂單状態
+                訂單狀態
               </p>
               <p class="order_status">
                 {{order.Status}}
@@ -63,19 +64,15 @@
             <h3 class="review">
               <p class="review_title">
                 <img
-                  src="/image/ribon_icon.png"
+                  src="/image/cat_icon.png"
                   alt=""
                   width="28px"
                   class="title_deco"
                 />
-                評價
+                賣家評價
               </p>
               <p class="order_review">
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
+                {{order.BuyerStar}}
               </p>
             </h3>
           </div>
@@ -87,7 +84,8 @@
         <img src="/image/dodetail-buy.png" alt="">
       </li>
     </ul>
-    <buyerdetail :buyerdata="orders[index]"></buyerdetail>
+    <buyerdetail :buyerdata="orders[index]"
+    :status="status"></buyerdetail>
   </div>
 </template>
 
@@ -106,6 +104,7 @@ export default {
       myOrder: '',
       expand: true,
       index: '',
+      status: '',
     };
   },
   mounted() {
@@ -114,11 +113,11 @@ export default {
     getIndex(key) {
       this.index = key;
     },
-    open() {
-      $('.openmodale').click((e) => {
-        e.preventDefault();
+    open(i) {
+      this.status = i;
+      setTimeout(() => {
         $('.buyer-modale').addClass('opened');
-      });
+      }, 500);
     },
   },
   components: {
@@ -227,7 +226,7 @@ export default {
   }
   .order_review,
   .order_review__closed {
-    font-size: 12px;
+    font-size: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -248,6 +247,7 @@ export default {
   .order_name {
     text-align: center;
     margin-top: 5px;
+    font-size: 22px;
   }
 }
 .order_photo {
@@ -275,6 +275,13 @@ export default {
   .order_status,
   .order_review {
     margin-bottom: 45px;
+    font-size: 22px;
+  }
+  .order_review {
+    font-size: 20px;
+  }
+  .order_price {
+    font-size: 28px;
   }
   .status {
     flex: 1;
@@ -289,16 +296,14 @@ export default {
   .status_title {
     position: relative;
     padding: 6px;
-    margin-right: 30px;
-    margin-left: 30px;
-    letter-spacing: 2px;
+    margin-left: 20px;
     background: linear-gradient(transparent 50%, $colorHeader 20%);
-    font-size: 18px;
+    font-size: 25px;
   }
   .title_deco {
     position: absolute;
-    top: 0px;
-    left: -10px;
+    top: 5px;
+    left: -15px;
   }
 }
 .nodetail_buyer {

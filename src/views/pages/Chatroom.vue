@@ -9,18 +9,18 @@
         </div>
         <ul class="rule-area">
          <li>
-           <span class="center"><img src="/image/catHead.png" alt="" width="20px">
-           房名：<span class="text">{{roomInfo.Name}}</span></span>
+           <span class="roomtitle">
+           {{roomInfo.Name}}</span>
          </li>
-         <li> <span class="center"><img src="/image/catHead.png" alt="" width="20px">
+         <li> <span class="center"><img src="/image/catHead.png" alt="" width="26px">
           目前人數：<span class="text">1</span></span>
          </li>
          <li>
-            <span class="center"><img src="/image/catHead.png" alt="" width="20px">
+            <span class="center"><img src="/image/catHead.png" alt="" width="26px">
          開房時間：<span class="text">{{roomInfo.roomStart}}</span></span>
          </li>
          <li class="room-rule"> <span class="center">
-           <img src="/image/catHead.png" alt="" width="20px">
+           <img src="/image/catHead.png" alt="" width="26px">
           房規：</span><span class="rule_conten text">{{roomInfo.Rule}}</span>
          </li>
         </ul>
@@ -29,6 +29,10 @@
           <li>廣告刊登</li>
           <li class="close_chatBTN" @click="closeRoom">關店</li>
         </ul>
+        <div class="shopPicture"
+        :style="{'background-image': `url(${roomInfo.Picture})`}"
+        v-if="myUserID !== hostID">
+        </div>
       </div>
       <div class="chatroom_content">
         <img src="/image/ribon002.png" alt="" class="deco_ribon002">
@@ -51,7 +55,7 @@
               </div>
             </div>
           </div>
-          <h3 v-if="buyerInroom<1">等待對方進入 ... (´・∀・｀)</h3>
+          <h3 class="waitText" v-if="buyerInroom<1">等待對方進入 ... (´・∀・｀)</h3>
   <!--買家畫面 ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆ -->
    <ul v-if="myUserID !== hostID">
      <li class="order text" v-for="item in Details" :key="item.Id">
@@ -86,7 +90,7 @@
             <p>
               ('∀') TOTAL ☆
             </p>
-          <p>$<span class="price">{{total}}</span></p>
+          <p class="moneyicon">$<span class="totalprice">{{total}}</span></p>
           </h3>
           <div class="decide">
             <div v-if="buyerChecked">
@@ -267,7 +271,6 @@ export default {
         console.log(log);
       });
       this.proxy.on('joinRoom', (userId, roomId) => {
-        console.log(userId, roomId);
         if (Number(vm.hostID) === userId) {
           vm.sellerInroom += 1;
           console.log('出品者いらっしゃいました！');
@@ -319,7 +322,7 @@ export default {
       });
       this.proxy.on('chked', () => {
         Swal.fire({
-          title: '★賣家已經去結帳囉( ^ω^ )★',
+          title: '★買家已經去結帳囉( ^ω^ )★',
           text: '若要交易請開新賣場🥺 個人頁面可以查看訂單💕',
           icon: 'warning',
           showDenyButton: false,
@@ -340,7 +343,7 @@ export default {
             this.axios(config)
               .then((response) => {
                 console.log(response);
-                this.$router.push('/ChatroomList');
+                this.$router.push('Mypage/Seller');
               });
           }
         });
@@ -573,6 +576,9 @@ export default {
   padding: 8px;
   background-color: rgb(228, 157, 157);
   font-size: 20px;
+}
+.waitText {
+  justify-content: center;
 }
 ::-webkit-scrollbar {display:none}
 </style>

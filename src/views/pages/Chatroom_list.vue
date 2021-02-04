@@ -99,18 +99,15 @@
               </div>
               <div class="room_info">
                 <h3 class="roomsName">
-                  ☆ 房名：<span class="open_time">{{room.Name}}</span>
+                  {{room.Name}}
                 </h3>
                 <h3 class="room_open">
                   ☆ 開房時間：<span class="open_time">{{room.roomStart}}</span>
                 </h3>
-                <h3 class="room_close">
+                <!-- <h3 class="room_close">
                   ☆ 截止時間：<span class="close_time">{{room.roomEnd}}</span
                   >
-                  <!-- <span class="remain"
-                    >剩<span class="remaining-time">20</span>分</span
-                  > -->
-                </h3>
+                </h3> -->
                 <div class="hr"></div>
                 <h3 class="room_rule">
                   ☆ 賣家規約：
@@ -252,8 +249,7 @@ export default {
         data: roomUser,
       };
       this.axios(config)
-        .then((res) => {
-          console.log(res);
+        .then(() => {
           this.$router.push(`/Chatroom/${roomId}`);
         })
         .catch((err) => {
@@ -419,7 +415,5 @@ export default {
 * {
   box-sizing: border-box;
   // border: 1px solid #000 !important;
-}
-.tag-color {
 }
 </style>

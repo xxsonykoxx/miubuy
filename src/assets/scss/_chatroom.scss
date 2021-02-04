@@ -40,7 +40,8 @@ $color_ribon: rgb(204,104,116);
   display: flex;
 }
 .text {
-  color: lighten($colorBrown, 8%);
+  color: lighten($colorBrown, 5%);
+  font-size: 22px;
 }
 .rule-area {
   font-family: myfont, japanese-font, serif;
@@ -56,8 +57,9 @@ $color_ribon: rgb(204,104,116);
   .rule_conten.text {
     display:inline-block;
     text-align: justify;
+    font-size: 23px;
     text-justify:inter-ideograph;
-    margin-left: 25px;
+    margin-left: 50px;
     max-width: 400px !important;
     #text {
       max-width: 400px;
@@ -66,7 +68,13 @@ $color_ribon: rgb(204,104,116);
   .center {
     display: flex;
     align-items: center;
+    font-size: 24px;;
   }
+}
+.roomtitle {
+  font-size: 28px;
+  margin-left: 24px;
+  color: rgb(190, 129, 129);
 }
 .btn-area {
   font-family: myfont, japanese-font, serif;
@@ -123,6 +131,8 @@ $color_ribon: rgb(204,104,116);
   top: -2px;
 }
 .order-area {
+  padding: 5px;
+  border-radius: 8px;
   ul {
     height: 240px;
     overflow-y: scroll;
@@ -130,7 +140,7 @@ $color_ribon: rgb(204,104,116);
     padding-bottom: 0px;
   }
   h2 {
-    font-size: 24px;
+    font-size: 28px;
     justify-content: center;
     color: $colorBrown;
     display: flex;
@@ -144,6 +154,7 @@ $color_ribon: rgb(204,104,116);
   h3 {
     display: flex;
     align-items: center;
+    font-size: 24px;
   }
   li {
     display: flex;
@@ -207,9 +218,21 @@ $color_ribon: rgb(204,104,116);
     margin-right: 15px;
   }
 }
+.order-area {
+  .price {
+    font-size: 28px;
+  }
+}
+.moneyicon {
+  color: $color_ribon !important;
+}
+.totalprice {
+  font-size: 30px !important;
+  color: $color_ribon;
+}
 .product-name {
     max-width: 280px;
-      font-size: 18px!important;
+      font-size: 24px!important;
     }
 
 .line {
@@ -222,7 +245,7 @@ $color_ribon: rgb(204,104,116);
 .total {
   padding: 10px;
   padding-top: 12px;
-  font-size: 24px;
+  font-size: 26px;
   display: flex;
   justify-content: space-between;
   font-weight: bold;
@@ -230,7 +253,7 @@ $color_ribon: rgb(204,104,116);
 }
 .decide {
   position: absolute;
-  bottom: 0;
+  bottom: 10px;
   right: 0;
   display: flex;
   justify-content: flex-end;
@@ -344,7 +367,7 @@ $color_ribon: rgb(204,104,116);
   display: flex;
   padding: 6px;
   max-width: 180px;
-  font-size: 18px;
+  font-size: 24px;
   align-items: center;
   margin-left: 5px;
   background-color: #fff;
@@ -354,7 +377,7 @@ $color_ribon: rgb(204,104,116);
   display: flex;
   max-width: 180px;
   padding: 6px;
-  font-size: 18px;
+  font-size: 24px;
   align-items: center;
   margin-right: 5px;
   background-color: #fff;
@@ -365,7 +388,7 @@ $color_ribon: rgb(204,104,116);
   align-items: flex-end;
   margin-right: 5px;
   margin-left: 5px;
-  font-size: 14px;
+  font-size: 16px;
 }
 .to-user-photo {
   background-image: url(/image/download20201101225100.png);
@@ -402,4 +425,13 @@ $color_ribon: rgb(204,104,116);
   max-width: 60px;
   border: none;
   padding-left: 5px;
+}
+.shopPicture {
+  background-color: rgb(255, 249, 231);
+  background-size: cover;
+  background-position: center center;
+  width: 34%;
+  border-radius: 5px;
+  height: 120px;
+  margin-left: 10px;
 }

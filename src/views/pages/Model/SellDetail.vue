@@ -11,8 +11,7 @@
       <div class="seller-modal-body">
         <div class="seller-modal-L">
           <h2 class="seller_shopName">
-            <img src="/image/oukan_icon.png" width="20px">店名：
-            <span>{{sellerdata.RoomName}}</span></h2>
+            {{sellerdata.RoomName}}</h2>
             <div class="seller_room-photo"
             :style="{'background-image': `url(${sellerdata.RoomPicture})`}"
             ></div>
@@ -31,9 +30,9 @@
         </div>
         <div class="seller-modal-R">
           <div class="seller-detail_orderStatus">
-            <h2>訂單狀態：<span>未付款</span></h2>
-            <h2>付款方式：<span>轉帳</span></h2>
-            <h2>取貨方式：<span>面交</span></h2>
+            <h2>訂單狀態：<span>{{sellerdata.Status}}</span></h2>
+            <h2>付款方式：<span>{{sellerdata.Payment}}</span></h2>
+            <h2>取貨方式：<span>{{sellerdata.Pickup}}</span></h2>
           </div>
           <div class="line005">
           </div>
@@ -46,8 +45,8 @@
           </div>
           <div class="line005"></div>
           <div class="seller-detail_review">
-            <h2>給賣家的評價</h2>
-            <div v-if="isReview">
+            <h2>給買家的評價</h2>
+            <div v-if="sellerdata.BuyerStar==='☆☆☆☆☆'">
               <button class="reviewBTN"
               v-if="add"
               @click="doReview"
@@ -58,16 +57,26 @@
                   <i class="far fa-check-circle" @click="sendReview"></i>
                 </div>
                 <h2 class="toSeller-comment">留言：
-                  <input type="text" class="review-text" v-model="comment">
+                  <input type="text" class="review-text"
+                  v-model="comment">
                 </h2>
               </div>
+            </div>
+            <div v-if="sellerdata.BuyerStar!=='☆☆☆☆☆'">
+              <h3 class="ReviewStar">
+                {{sellerdata.BuyerStar}}
+              </h3>
+              <h3 class="Comment">
+                {{sellerdata.BuyerReviews}}
+              </h3>
             </div>
           </div>
         </div>
       </div>
       <div class="seller-modal-footer">
         <button class="confirmBTN"
-        @click="confirmOrder">確認發貨</button>
+        v-if="status==='已付款'"
+        @click="confirmOrder">已發貨</button>
         <button class="closemodale"
         @click="close">關閉</button>
       </div>
@@ -76,6 +85,7 @@
 </template>
 
 <script>
+import Swal from 'sweetalert2';
 import starRating from 'vue-star-rating';
 import $ from '../../../../node_modules/jquery';
 
@@ -86,10 +96,9 @@ export default {
       rating: 0,
       add: true,
       comment: '',
-      isReview: true,
     };
   },
-  props: ['sellerdata'],
+  props: ['sellerdata', 'status'],
   mounted() {
   },
   components: {
@@ -115,7 +124,7 @@ export default {
     confirmOrder() {
       const confirmAPI = `https://miubuy.rocket-coding.com/api/Orders/${this.sellerdata.Id}`;
       const confirmData = this.$qs.stringify({
-        Status: 6,
+        Status: '已發貨',
       });
       const config = {
         method: 'put',
@@ -127,8 +136,18 @@ export default {
         data: confirmData,
       };
       this.axios(config)
-        .then((res) => {
-          console.log(res);
+        .then(() => {
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: '通知買家已發貨 ★彡',
+            showConfirmButton: false,
+            timer: 2500,
+          })
+            .then(() => {
+              this.$router.push('/Mypage/Seller');
+              window.location.reload();
+            });
         });
     },
     sendReview() {
@@ -149,6 +168,17 @@ export default {
       this.axios(config)
         .then((res) => {
           console.log(res);
+          Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: '評價成功送出 (´・ω・｀)',
+            showConfirmButton: false,
+            timer: 2500,
+          })
+            .then(() => {
+              this.$router.push('/Mypage/Seller');
+              window.location.reload();
+            });
         });
     },
   },
@@ -178,7 +208,7 @@ $color_ribon: rgb(204,104,116);
 .review-text {
   border: none;
   height: 30px;
-  font-size: 12px;
+  font-size: 15px;
   border-bottom: 1px solid rgb(190, 185, 179);
   min-width: 240px;
   color: $colorBrown;
@@ -203,5 +233,8 @@ $color_ribon: rgb(204,104,116);
   &:hover {
     background-color: darken($color_ribon, 10%)!important;
   }
+}
+.seller_shopName {
+  color:$color_ribon;
 }
 </style>

@@ -109,7 +109,7 @@ body.home {
 }
 .subtitle {
   font-family: myfont, serif;
-  font-size: 22px;
+  font-size: 24px;
   margin-left: 200px;
   color: darken($colorBrown, 15%);
   font-weight: bold;
@@ -152,7 +152,7 @@ body.home {
 }
 .JA_now_num,
 .TW_now_num {
-  color: $colorHeader;
+  color: darken($colorHeader, 10%);
   font-weight: bold;
 }
 .icon {

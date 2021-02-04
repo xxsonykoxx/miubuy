@@ -11,8 +11,7 @@
       <div class="buyer-modal-body">
         <div class="buyer-modal-L">
           <h2 class="buyer_shopName">
-            <img src="/image/oukan_icon.png" width="20px">店名：
-            <span>{{buyerdata.RoomName}}</span></h2>
+            {{buyerdata.RoomName}}</h2>
             <div class="buyer_room-photo"
             :style="{'background-image': `url(${buyerdata.RoomPicture})`}"
             ></div>
@@ -31,9 +30,9 @@
         </div>
         <div class="buyer-modal-R">
           <div class="buyer-detail_orderStatus">
-            <h2>訂單狀態：<span>未付款</span></h2>
-            <h2>付款方式：<span>轉帳</span></h2>
-            <h2>取貨方式：<span>面交</span></h2>
+            <h2>訂單狀態：<span>{{buyerdata.Status}}</span></h2>
+            <h2>付款方式：<span>{{buyerdata.Payment}}</span></h2>
+            <h2>取貨方式：<span>{{buyerdata.Pickup}}</span></h2>
           </div>
           <div class="line005">
           </div>
@@ -47,28 +46,43 @@
           <div class="line005"></div>
           <div class="buyer-detail_review">
             <h2>給賣家的評價</h2>
-            <button class="reviewBTN"
-            v-if="add"
-            @click="doReview"
-            >評價賣家</button>
-            <div class="review-content" v-else>
-              <div class="flex">
-                <star-rating v-model="rating"></star-rating>
-                <i class="far fa-check-circle" @click="sendReview"></i>
+            <div
+            v-if="buyerdata.SellerStar==='☆☆☆☆☆'">
+              <button class="reviewBTN"
+              v-if="add"
+              @click="doReview"
+              >評價賣家</button>
+              <div class="review-content" v-else>
+                <div class="flex">
+                  <star-rating v-model="rating"></star-rating>
+                  <i class="far fa-check-circle" @click="sendReview"></i>
+                </div>
+                <h2 class="toSeller-comment">留言：
+                  <input type="text" class="review-text"
+                  v-model="comment">
+                </h2>
               </div>
-              <h2 class="toSeller-comment">留言：
-                <input type="text" class="review-text"
-                v-model="comment">
-              </h2>
             </div>
-          </div>
+            <div v-if="buyerdata.SellerStar!=='☆☆☆☆☆'">
+              <h3 class="ReviewStar">
+                {{buyerdata.SellerStar}}
+              </h3>
+              <h3 class="Comment">
+                {{buyerdata.SellerReviews}}
+              </h3>
+            </div>
+            </div>
         </div>
       </div>
       <div class="buyer-modal-footer">
         <button class="confirmBTN"
-        @click="completeOrder"
-        v-if="completeBTN"
-        >完成交易</button>
+        @click="payDone"
+        v-if="status==='未付款'"
+        >已付款</button>
+        <button class="confirmBTN"
+        @click="pickDone"
+        v-if="status==='已發貨'"
+        >確認收貨</button>
         <button class="closemodale"
         @click="close">關閉</button>
       </div>
@@ -88,12 +102,9 @@ export default {
       rating: 0,
       add: true,
       comment: '',
-      completeBTN: false,
     };
   },
-  props: ['buyerdata'],
-  mounted() {
-  },
+  props: ['buyerdata', 'status'],
   components: {
     starRating,
   },
@@ -103,16 +114,15 @@ export default {
       /(?:(?:^|.*;\s*)userToken\s*\=\s*([^;]*).*$)|^.*$/,
       '$1',
     );
-    if (this.buyerdata.Status === '已發貨') {
-      this.completeBTN = true;
-    }
+  },
+  mounted() {
   },
   methods: {
-    completeOrder() {
-      if (this.buyerdata.Status === '已發貨') {
+    payDone() {
+      if (this.buyerdata.Status === '未付款') {
         const completeAPI = `https://miubuy.rocket-coding.com/api/Orders/${this.buyerdata.Id}`;
         const completeData = this.$qs.stringify({
-          Status: 9,
+          Status: '已付款',
         });
         const config = {
           method: 'put',
@@ -124,8 +134,49 @@ export default {
           data: completeData,
         };
         this.axios(config)
-          .then((res) => {
-            console.log(res);
+          .then(() => {
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: '通知賣家已付款(´ω`)',
+              showConfirmButton: false,
+              timer: 5000,
+            })
+              .then(() => {
+                this.$router.push('/Mypage/Seller');
+                window.location.reload();
+              });
+          });
+      }
+    },
+    pickDone() {
+      if (this.status === '已發貨') {
+        const completeAPI = `https://miubuy.rocket-coding.com/api/Orders/${this.buyerdata.Id}`;
+        const completeData = this.$qs.stringify({
+          Status: '訂單完成',
+        });
+        const config = {
+          method: 'put',
+          url: completeAPI,
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          data: completeData,
+        };
+        this.axios(config)
+          .then(() => {
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: '通知賣家收到商品！(´ω`)',
+              showConfirmButton: false,
+              timer: 2500,
+            })
+              .then(() => {
+                this.$router.push('/Mypage/Seller');
+                window.location.reload();
+              });
           });
       }
     },
@@ -195,11 +246,12 @@ export default {
 .review-text {
   border: none;
   height: 30px;
-  font-size: 12px;
+  font-size: 26px;
+  font-family: myfont, japanese-font, serif;
   border-bottom: 1px solid rgb(190, 185, 179);
   min-width: 240px;
   color: $colorBrown;
-  letter-spacing: 1.5px;
+  letter-spacing: 0.2px;
 }
 .flex {
   display: flex;
@@ -213,5 +265,25 @@ export default {
       color:$colorBrown;
     }
   }
+}
+.ReviewStar {
+  margin-top: 10px;
+  margin-right: 20px;
+  display: flex;
+  justify-content: center;
+  color: darken($colorHeader,10%);
+  font-size: 28px;
+}
+.Comment {
+  margin-top: 10px;
+  margin-right: 20px;
+  display: flex;
+  justify-content: center;
+  color: $colorBrown;
+  font-size: 24px;
+}
+$color_ribon: rgb(204,104,116);
+.buyer_shopName {
+  color: $color_ribon;
 }
 </style>

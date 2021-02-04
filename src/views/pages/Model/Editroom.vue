@@ -44,13 +44,11 @@
               <select name="" v-model="roomdata.CountyId"
               @change="getcity()"
               >
-                <option value="" selected disabled>☆彡</option>
                 <option v-for="county in getCounty"
               :key="county.Id"
               :value="county.Id">{{county.Name}}</option>
               </select>
               <select name="" v-model="roomdata.CityId">
-              <option value="" selected disabled>★彡</option>
               <option v-for="city in getCity"
               :key="city.Id"
               :value="city.Id">{{city.Name}}</option>
@@ -199,10 +197,10 @@ export default {
         MaxUsers: vm.roomdata.MaxUsers,
         Name: vm.roomdata.Name,
         Picture: vm.roomdata.Picture,
-        CountryId: vm.roomdata.CountryId,
-        CountyId: vm.roomdata.CountyId,
-        CityId: vm.roomdata.CityId,
-        TagId: vm.roomdata.TagId,
+        CountryId: Number(vm.roomdata.CountryId),
+        CountyId: Number(vm.roomdata.CountyId),
+        CityId: Number(vm.roomdata.CityId),
+        TagId: Number(vm.roomdata.TagId),
         Rule: vm.roomdata.Rule,
         R18: vm.roomdata.R18,
         TagText: vm.roomdata.TagText,
@@ -217,8 +215,8 @@ export default {
         data: newroomDetail,
       };
       vm.axios(config)
-        .then((response) => {
-          console.log(response);
+        .then((res) => {
+          console.log(res);
         })
         .catch((error) => {
           console.log(error);

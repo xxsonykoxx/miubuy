@@ -41,7 +41,7 @@
             <input type="text" v-model="myinfo.alias"/>
           </div>
           <div class="my-email_group info-group">
-            <label for="">email</label>
+            <label for="">信箱</label>
             <input type="email" v-model="myinfo.email"/>
           </div>
           <div class="my-phone_group info-group">
@@ -226,7 +226,7 @@ export default {
   margin-top: 5px;
   position: relative;
   label {
-    font-size: 18px;
+    font-size: 22px;
     color: #fff;
   }
 }
@@ -249,11 +249,12 @@ export default {
     border-radius: 5px;
     padding-left: 7px;
     font-family: myfont, japanese-font, serif;
-    font-size: 20px;
+    font-size: 22px;
     color: $colorBrown;
   }
   input::placeholder {
     color: $colorBrown;
+    font-size: 20px;
   }
 }
 .my-photo {
@@ -293,6 +294,7 @@ export default {
   position: absolute;
   right: 40px;
   bottom: -20px;
+  font-size: 24px;
   cursor: pointer;
   &:hover {
     background-color: $colorHeader;
