@@ -116,8 +116,15 @@
                   </p>
                 </h3>
                 <ul class="roomtag_group">
-                  <li class="roomtag"><a href="#">#{{room.CountyName}}</a></li>
-                  <li class="roomtag"><a href="#">#{{room.CityName}}</a></li>
+                  <li class="roomtag"
+                  v-if="room.CountyName!=='不選☆彡'"
+                  ><a href="#">#{{room.CountyName}}</a></li>
+                  <li class="roomtag"
+                  v-if="room.CityName!=='不選★彡'"
+                  ><a href="#">#{{room.CityName}}</a></li>
+                  <li class="roomtag"
+                  v-if="room.CityName==='不選★彡'"
+                  ><a href="#">#全國</a></li>
                   <li class="roomtag"><a href="#">#{{room.TagName}}</a></li>
                 </ul>
                 <div class="room-enter_btn" @click="getID(room.Id)"></div>

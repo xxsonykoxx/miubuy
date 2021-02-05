@@ -13,7 +13,7 @@
            {{roomInfo.Name}}</span>
          </li>
          <li> <span class="center"><img src="/image/catHead.png" alt="" width="26px">
-          目前人數：<span class="text">1</span></span>
+          最大人數：<span class="text">1</span></span>
          </li>
          <li>
             <span class="center"><img src="/image/catHead.png" alt="" width="26px">
