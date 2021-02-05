@@ -73,6 +73,8 @@
               </p>
               <p class="order_review">
                 {{order.SellerStar}}
+                 <br>
+                <span>{{order.SellerReviews}}</span>
               </p>
             </h3>
           </div>

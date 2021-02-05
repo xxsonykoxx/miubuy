@@ -143,7 +143,7 @@ export default {
               timer: 5000,
             })
               .then(() => {
-                this.$router.push('/Mypage/Seller');
+                this.$router.push('/Mypage/Buyer');
                 window.location.reload();
               });
           });
@@ -174,7 +174,7 @@ export default {
               timer: 2500,
             })
               .then(() => {
-                this.$router.push('/Mypage/Seller');
+                this.$router.push('/Mypage/Buyer');
                 window.location.reload();
               });
           });

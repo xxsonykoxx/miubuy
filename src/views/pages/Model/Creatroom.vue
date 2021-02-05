@@ -70,7 +70,6 @@
           <label for="">最大人數</label>
           <select name="" v-model="roomInfo.MaxUsers">
             <option value="1" selected>1</option>
-            <option value="2">2</option>
           </select>
         </div>
         <div class="access_review-limit group-flex mb">
@@ -78,7 +77,6 @@
           <select name="" id="">
             <option value="">0</option>
             <option value="">1</option>
-            <option value="">2</option>
           </select>
         </div>
         <ul class="access_checkgroup">

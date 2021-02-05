@@ -73,6 +73,8 @@
               </p>
               <p class="order_review">
                 {{order.BuyerStar}}
+                <br>
+                <span>{{order.BuyerReviews}}</span>
               </p>
             </h3>
           </div>
@@ -226,10 +228,11 @@ export default {
   }
   .order_review,
   .order_review__closed {
+    color: darken($colorHeader, 10%);
     font-size: 20px;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
   }
 }
 .order_title {
@@ -274,11 +277,13 @@ export default {
   .order_price,
   .order_status,
   .order_review {
-    margin-bottom: 45px;
+    margin-bottom: 25px;
     font-size: 22px;
   }
   .order_review {
-    font-size: 20px;
+    span {
+      color: $colorBrown;
+    }
   }
   .order_price {
     font-size: 28px;
