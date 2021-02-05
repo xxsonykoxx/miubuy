@@ -272,12 +272,10 @@ export default {
     text-align: center;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
   }
   .order_price,
   .order_status,
   .order_review {
-    margin-bottom: 25px;
     font-size: 22px;
   }
   .order_review {

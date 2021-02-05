@@ -99,6 +99,10 @@
               @click="BuyerCheckorder"
               >確認訂單</a>
             </div>
+            <div v-if="decidedStatus">
+              <h3 class="decided-status"
+              >...等待賣家成立訂單</h3>
+            </div>
             <div v-if="sellerChecked">
               <a class="decide_btn"
               v-if="Number(hostID) === Number(myUserID)"
@@ -224,6 +228,8 @@ export default {
       getOrderID: '',
       profileIMG_buyer: '',
       profileIMG: '',
+      decidedStatus: false,
+      waitStatus: false,
     };
   },
   components: {
@@ -271,6 +277,7 @@ export default {
         console.log(log);
       });
       this.proxy.on('joinRoom', (userId, roomId) => {
+        console.log('ID:', userId);
         if (Number(vm.hostID) === userId) {
           vm.sellerInroom += 1;
           console.log('出品者いらっしゃいました！');
@@ -316,6 +323,7 @@ export default {
           vm.sellerChecked = true;
         }
         if (res.Status === '訂單送出') {
+          vm.decidedStatus = false;
           vm.checkoutBTN = true;
           vm.getOrderID = res.OrderId;
         }
@@ -323,7 +331,7 @@ export default {
       this.proxy.on('chked', () => {
         Swal.fire({
           title: '★買家已經去結帳囉( ^ω^ )★',
-          text: '若要交易請開新賣場🥺 個人頁面可以查看訂單💕',
+          text: '個人頁面可以查看訂單💕',
           icon: 'warning',
           showDenyButton: false,
           showCancelButton: false,
@@ -406,6 +414,7 @@ export default {
       // ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆
     },
     BuyerCheckorder() {
+      this.decidedStatus = true;
       this.buyerChecked = false;
       this.proxy.invoke('CheckOrder', this.roomID);
     },
@@ -560,11 +569,11 @@ export default {
 }
 .swal2-title {
   font-family: myfont, japanese-font, serif;
-  font-size: 22px;
+  font-size: 24px;
 }
  .swal2-content {
     font-family: myfont, japanese-font, serif;
-  font-size: 20px;
+  font-size: 22px;
  }
 .swal2-styled.swal2-confirm{
   font-family: myfont, japanese-font, serif;
@@ -581,4 +590,9 @@ export default {
   justify-content: center;
 }
 ::-webkit-scrollbar {display:none}
+
+.decided-status {
+  margin-right: 10px;
+  color: lighten($colorBrown, 20%);
+}
 </style>
