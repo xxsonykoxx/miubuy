@@ -1,5 +1,26 @@
 .checkout_BGI {
-  background-color: $colorHeader;
+  background-image: url(/image/chat-bgc.png);
+  background-size: cover;
+}
+*{
+  // border: 1px solid #000 !important;
+}
+/*==============★ font-family ★==============*/
+.checkout-title,.receiver-detail,.checkout_name-group, .checkout_phone-group,.checkout_address-group,.checkout_mail-group,.payment-detail,.pay-and-deliver,.memo-area,.checkout_btn{
+  font-family: myfont, japanese-font,  serif;
+}
+/*==============★ 台灣地図 ★==============*/
+.checkout-title {
+  margin-top: 10px;
+  font-size: 28px;
+  color: darken($colorBrown, 10%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  span {
+    margin-left: 8px;
+    margin-right: 8px;
+  }
 }
 .checkout_container {
   max-width: 920px;
@@ -10,8 +31,122 @@
   border-radius: 8px;
   margin-top: 30px;
   margin-bottom: 30px;
+  position: relative;
 }
 .memo-area {
   resize: none;
   white-space: pre-wrap;
+  border: 2px solid lighten($colorBrown, 10%);
+  border-radius: 8px;
+  width: 100%;
+  height: 105px
 }
+.checkout-form {
+  display: flex;
+  justify-content: center;
+  margin-right: 20px;
+  padding: 20px;
+}
+.delive-content,.receive-content {
+  display: flex;
+  flex-direction: column;
+  margin-left: 30px;
+  margin-bottom: 20px;
+  label {
+    color: $colorBrown;
+    margin-bottom: 5px;
+  }
+  input,select {
+    height: 30px;
+    width: 100%;
+    margin-left: 5px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    border: 2px solid lighten($colorBrown, 10%);
+    color: lighten($colorBrown, 10%);
+    padding-left: 8px;
+    font-family: myfont, japanese-font,  serif;
+    font-size: 20px;
+  }
+  .checkout-address,.checkout-email {
+    width: 140%;
+  }
+  select {
+    width: 70%;
+    font-family: myfont, japanese-font,  serif;
+    font-size: 20px;
+  }
+  textarea:focus {
+    outline: none;
+  }
+  textarea {
+    margin-left: 5px;
+    color: $colorBrown;
+    font-size: 20px;
+    padding: 8px;
+    &::placeholder {
+      color: $colorHeader;
+    }
+  }
+}
+.receiver-detail,.pay-and-deliver {
+ display: flex;
+ align-items: center;
+ padding: 10px;
+ span {
+   margin-left: 10px;
+   font-size: 26px;
+   color: darken($colorBrown, 2%);
+ }
+}
+.leftBlock {
+  margin-right: 100px;
+}
+.rightBlock {
+  margin-left: 0px;
+}
+.checkout_btn {
+  position: absolute;
+  bottom: -3px;
+  right: 5px;
+  &:hover {
+    cursor: pointer;
+    transform: translateX(-5px);
+  }
+}
+.center-line {
+  margin-top: 70px;
+  margin-left: 20px;
+  margin-right: 15px;
+  width: 1px;
+  height: 250px;
+  background-color: rgb(219, 216, 212);
+}
+.flower01 {
+  position: absolute;
+  width: 30px;
+  opacity: 0.9;
+  left: 70px;
+  top: 25px;
+  animation:spin 10s linear infinite;
+}
+.flower02 {
+  position: absolute;
+  width: 40px;
+  opacity: 0.9;
+  top: 150px;
+  right: 50px;
+  animation:spin 10s linear infinite;
+}
+.flower03 {
+  position: absolute;
+  width: 35px;
+  opacity: 0.9;
+  bottom: 30px;
+  left: 10px;
+  animation:spin 10s linear infinite;
+}
+
+/*==============★  ★==============*/
+@keyframes spin { 100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); }}
+@keyframes spin2 { 100% { -webkit-transform: rotate(360deg); transform: rotate(-360deg); }}

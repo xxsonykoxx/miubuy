@@ -33,6 +33,7 @@
               type="password"
               class="login--password"
               v-model="user.Password"
+              @keyup.enter="login"
             />
           </div>
         </div>
@@ -85,6 +86,8 @@
 </template>
 
 <script>
+import Swal from 'sweetalert2';
+
 export default {
   data() {
     return {
@@ -97,7 +100,7 @@ export default {
   created() {},
   methods: {
     login() {
-      const API = `${process.env.VUE_APP_APIPATH}api/Login`;
+      const API = 'https://miubuy.rocket-coding.com/api/Login';
       const user = this.$qs.stringify(this.user);
       const config = {
         method: 'post',
@@ -110,12 +113,22 @@ export default {
 
       this.axios(config)
         .then((response) => {
-          console.log(response);
-          const userToken = response.data.token;
-          document.cookie = `userToken=${userToken}; path=/`;
-          localStorage.setItem('token', 'ImLogin');
-          localStorage.setItem('ID', response.data.Id);
-          this.$router.push('/');
+          if (response.data !== false) {
+            const userToken = response.data.token;
+            document.cookie = `userToken=${userToken}; path=/`;
+            localStorage.setItem('token', 'ImLogin');
+            localStorage.setItem('ID', response.data.Id);
+            this.$router.push('/');
+          }
+          if (response.data === false) {
+            Swal.fire({
+              position: 'center',
+              icon: 'error',
+              title: '帳號密碼錯誤 (´・ω・｀)',
+              showConfirmButton: false,
+              timer: 2500,
+            });
+          }
         })
         .catch((error) => {
           console.log(error);

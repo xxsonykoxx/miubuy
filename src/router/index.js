@@ -97,7 +97,7 @@ const routes = [
     },
   },
   {
-    path: '/Checkout',
+    path: '/Checkout/:Id',
     name: 'Checkout',
     component: Checkout,
     meta: {

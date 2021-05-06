@@ -104,6 +104,7 @@
 </template>
 
 <script>
+
 export default {
   data() {
     return {
@@ -116,7 +117,7 @@ export default {
   },
   created() {
     const vm = this;
-    const APIprefectures = `${process.env.VUE_APP_APIPATH}api/Counties/2`;
+    const APIprefectures = 'https://miubuy.rocket-coding.com/api/Counties/3';
     this.axios.get(APIprefectures)
       .then((res) => {
         vm.prefectures = res.data;
@@ -125,7 +126,7 @@ export default {
   methods: {
     getCity() {
       const vm = this;
-      const APIcity = `${process.env.VUE_APP_APIPATH}api/Cities/${this.prefectureSelected}`;
+      const APIcity = `https://miubuy.rocket-coding.com/api/Cities/${this.prefectureSelected}`;
       vm.axios.get(APIcity)
         .then((res) => {
           vm.citys = res.data;
@@ -138,7 +139,8 @@ export default {
       const storage = sessionStorage;
       storage.setItem('prefecture', this.prefectureSelected);
       storage.setItem('city', this.citySelected);
-      storage.setItem('Countries', '2');
+      storage.setItem('Countries', '3');
+      this.$router.push('/ChatroomList');
     },
     getNowstatus() {
       const vm = this;
@@ -178,7 +180,6 @@ body {
 .home__container {
   background-color: $bgc;
   padding: 15px;
-  margin-top: 5px;
   margin-bottom: 20px;
   margin-left: 50px;
   margin-right: 50px;
@@ -186,7 +187,6 @@ body {
 }
 header {
   position: relative;
-  padding: 5px;
   max-width: 100%;
   display: flex;
   justify-content: space-between;
@@ -209,10 +209,8 @@ header {
     display: flex;
     margin-right: 50px;
     li {
-      margin-top: 5px;
       margin-left: 20px;
       // background-color: $color_brown;
-      padding: 3px;
       padding-left: 5px;
       padding-right: 5px;
       border-radius: 5px;

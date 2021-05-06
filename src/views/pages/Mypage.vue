@@ -6,15 +6,15 @@
       <div class="mypage_container">
         <!--☆=== 選單列 ===☆-->
         <div class="mypage_orderlist_switch">
-          <router-link to="/Mypage/Seller"
+          <a @click="toSellerPage"
             ><img src="/image/selling_list_btn.png" alt="" class="selling_list"
-          /></router-link>
-          <router-link to="/Mypage/Buyer"
+          /></a>
+          <a @click="toBuyerPage"
             ><img src="/image/buying_list_btn.png" alt="" class="buying_list"
-          /></router-link>
-          <router-link to="/Mypage/Myinfo"
+          /></a>
+          <a @click="toMyinfoPage"
             ><img src="/image/user_edit_btn.png" alt="" class="user_editor"
-          /></router-link>
+          /></a>
         </div>
         <router-view></router-view>
         <!--☆=== 選單內容表 ===☆-->
@@ -22,16 +22,53 @@
 
       <!--☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆-->
     </div>
+ <div class="loader" key="loader">
+      <div id="loading" v-show="!loading">
+        <div class="loading">
+          <div class="obj"></div>
+          <div class="obj"></div>
+          <div class="obj"></div>
+          <div class="obj"></div>
+          <div class="obj"></div>
+          <div class="obj"></div>
+          <div class="obj"></div>
+          <div class="obj"></div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
+  data() {
+    return {
+      loading: false,
+    };
+  },
   methods: {
     getInfo() {
     },
+    toBuyerPage() {
+      this.$router.push('/Mypage/Buyer');
+      window.location.reload();
+    },
+    toSellerPage() {
+      this.$router.push('/Mypage/Seller');
+      window.location.reload();
+    },
+    toMyinfoPage() {
+      this.$router.push('/Mypage/Myinfo');
+    },
   },
   created() {
+  },
+  mounted() {
+  /* Loading ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆ */
+    setTimeout(() => {
+      this.loading = true;
+    }, 1000);
+    /* ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆ */
   },
 };
 </script>
@@ -96,7 +133,6 @@ footer {
 .mypage_container {
   background-color: $bgc;
   padding: 15px;
-  margin-top: 5px;
   margin-bottom: 20px;
   margin-left: 50px;
   margin-right: 50px;
