@@ -31,6 +31,21 @@
       </div>
     </div>
     <creatroom></creatroom>
+<!-- Loading ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆-->
+    <div class="loader" key="loader">
+      <div id="loading" v-show="!loading">
+        <div class="loading">
+          <div class="obj"></div>
+          <div class="obj"></div>
+          <div class="obj"></div>
+          <div class="obj"></div>
+          <div class="obj"></div>
+          <div class="obj"></div>
+          <div class="obj"></div>
+          <div class="obj"></div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -43,14 +58,18 @@ export default {
       countries: '',
       J_count: '',
       T_count: '',
+      loading: false,
     };
   },
   components: {
     creatroom,
   },
   created() {
+    setTimeout(() => {
+      this.loading = true;
+    }, 1500);
     const vm = this;
-    const API = `${process.env.VUE_APP_APIPATH}api/Countries`;
+    const API = 'https://miubuy.rocket-coding.com/api/Countries';
     vm.axios.get(API)
       .then((res) => {
         vm.countries = res.data;
@@ -75,7 +94,6 @@ body.home {
 .home__container {
   background-color: $bgc;
   padding: 15px;
-  margin-top: 5px;
   margin-bottom: 20px;
   margin-left: 50px;
   margin-right: 50px;
@@ -91,7 +109,7 @@ body.home {
 }
 .subtitle {
   font-family: myfont, serif;
-  font-size: 22px;
+  font-size: 24px;
   margin-left: 200px;
   color: darken($colorBrown, 15%);
   font-weight: bold;
@@ -134,7 +152,7 @@ body.home {
 }
 .JA_now_num,
 .TW_now_num {
-  color: $colorHeader;
+  color: darken($colorHeader, 10%);
   font-weight: bold;
 }
 .icon {

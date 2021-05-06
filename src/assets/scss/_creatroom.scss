@@ -8,20 +8,12 @@
 .room_img {
   width: 200px;
   height: 100px;
-  background-color: $colorHeader;
+  background-image: url(/image/addPicture.png);
+  background-size: cover;
   border-radius: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
-  h3 {
-     font-family: myfont, japanese-font, serif;
-     color: #fff;
-     cursor: pointer;
-     font-size: 18px;
-  }
-  &:hover {
-    background-color: darken($colorHeader,5%);
-  }
 }
 .modale:before {
   content: '';
@@ -177,4 +169,14 @@
      background-color: lighten($colorBrown,10%);
   }
   }
+}
+.room_photo_group {
+  position: relative;
+}
+.room_photo-uploadBTN {
+  position: absolute !important;
+  right: 10px;
+  height: 90px;
+  width: 180px;
+  opacity: 0;
 }

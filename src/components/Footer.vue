@@ -18,9 +18,9 @@ footer {
   font-family: myfont, serif;
   font-weight: lighter;
   color: #fff;
-  font-size: 20px;
+  font-size: 24px;
   span {
-    font-size: 12px;
+    font-size: 14px;
   }
 }
 </style>

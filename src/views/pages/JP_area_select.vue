@@ -56,7 +56,7 @@
                   />市、區</label
                 >
                 <select class="JA_form-city" v-model="citySelected" @change="getNowstatus()">
-                <option value="" selected>==請選擇市區==</option>
+               <option value="" selected>==請選擇市區==</option>
                   <option v-for="city in citys" :key="city.Id"
                   :value="city.Id">{{city.Name}}</option>
                 </select>
@@ -79,11 +79,9 @@
                 />目前有&nbsp;<span class="now_status_num">{{ status }}</span
                 >&nbsp;間代購聊天室
               </h3>
-              <router-link to="/ChatroomList">
                 <img src="/image/GO_btn.png" class="go_btn" alt=""
                 @click="saveInfo"
                 />
-              </router-link>
             </div>
           </div>
         </div>
@@ -99,6 +97,7 @@
 </template>
 
 <script>
+// import Swal from 'sweetalert2';
 import creatroom from './Model/Creatroom.vue';
 
 export default {
@@ -117,7 +116,7 @@ export default {
   },
   created() {
     const vm = this;
-    const APIprefectures = `${process.env.VUE_APP_APIPATH}api/Counties/1`;
+    const APIprefectures = 'https://miubuy.rocket-coding.com/api/Counties/2';
     this.axios.get(APIprefectures)
       .then((res) => {
         vm.prefectures = res.data;
@@ -126,7 +125,7 @@ export default {
   methods: {
     getCity() {
       const vm = this;
-      const APIcity = `${process.env.VUE_APP_APIPATH}api/Cities/${this.prefectureSelected}`;
+      const APIcity = `https://miubuy.rocket-coding.com/api/Cities/${this.prefectureSelected}`;
       vm.axios.get(APIcity)
         .then((res) => {
           vm.citys = res.data;
@@ -139,7 +138,8 @@ export default {
       const storage = sessionStorage;
       storage.setItem('prefecture', this.prefectureSelected);
       storage.setItem('city', this.citySelected);
-      storage.setItem('Countries', '1');
+      storage.setItem('Countries', '2');
+      this.$router.push('/ChatroomList');
     },
     getNowstatus() {
       const vm = this;
@@ -176,7 +176,6 @@ select {
 .home__container {
   background-color: $bgc;
   padding: 15px;
-  margin-top: 5px;
   margin-bottom: 20px;
   margin-left: 50px;
   margin-right: 50px;
@@ -184,7 +183,6 @@ select {
 }
 header {
   position: relative;
-  padding: 5px;
   max-width: 100%;
   display: flex;
   justify-content: space-between;
@@ -207,10 +205,8 @@ header {
     display: flex;
     margin-right: 50px;
     li {
-      margin-top: 5px;
       margin-left: 20px;
       // background-color: $color_brown;
-      padding: 3px;
       padding-left: 5px;
       padding-right: 5px;
       border-radius: 5px;

@@ -15,7 +15,16 @@
       <div class="myinfo_right-content">
         <form action="" class="myinfo_form">
           <div class="my-photo">
-            <h3>上傳</h3>
+           <vue-core-image-upload
+            class="uploadBTN"
+            :crop="false"
+            :credentials="false"
+            @imageuploaded="imageuploaded"
+            :max-file-size="5242880"
+            url="https://miubuy.rocket-coding.com/api/UpLoadFile" >
+          </vue-core-image-upload>
+            <img :src="myinfo.photo" class="myphoto">
+            <h3>上傳(jpg)</h3>
           </div>
           <div class="my-password_group info-group">
             <label for="">修改密碼</label>
@@ -32,7 +41,7 @@
             <input type="text" v-model="myinfo.alias"/>
           </div>
           <div class="my-email_group info-group">
-            <label for="">email</label>
+            <label for="">信箱</label>
             <input type="email" v-model="myinfo.email"/>
           </div>
           <div class="my-phone_group info-group">
@@ -62,6 +71,9 @@
 </template>
 
 <script>
+import VueCoreImageUpload from 'vue-core-image-upload';
+import Swal from 'sweetalert2';
+
 export default {
   data() {
     return {
@@ -71,11 +83,17 @@ export default {
         alias: '',
         email: '',
         phone: '',
+        photo: null,
       },
+      src: '',
       token: '',
       id: '',
       Account: '',
+      uploadPhoto: null,
     };
+  },
+  components: {
+    'vue-core-image-upload': VueCoreImageUpload,
   },
   mounted() {
     const vm = this;
@@ -85,7 +103,7 @@ export default {
       /(?:(?:^|.*;\s*)userToken\s*\=\s*([^;]*).*$)|^.*$/,
       '$1',
     );
-    const myAPI = `${process.env.VUE_APP_APIPATH}api/Users/${this.id}`;
+    const myAPI = `https://miubuy.rocket-coding.com/api/Users/${this.id}`;
     this.axios.defaults.headers.common.Authorization = `Bearer ${vm.token}`;
     this.axios.get(myAPI).then((res) => {
       console.log(res);
@@ -94,9 +112,16 @@ export default {
       vm.myinfo.alias = user.Nickname;
       vm.myinfo.email = user.Email;
       vm.myinfo.phone = user.Phone;
+      vm.myinfo.photo = user.Picture;
     });
   },
   methods: {
+    imageuploaded(res) {
+      console.log('1', res);
+      const img = res;
+      this.myinfo.photo = `https://miubuy.rocket-coding.com/Img/${img}`;
+      console.log('2', this.myinfo.photo);
+    },
     patchInfo() {
       const vm = this;
       const userInfo = vm.$qs.stringify({
@@ -106,10 +131,11 @@ export default {
         Email: vm.myinfo.email,
         Nickname: vm.myinfo.alias,
         Phone: vm.myinfo.phone,
+        Picture: vm.myinfo.photo,
       });
       const config = {
         method: 'put',
-        url: `${process.env.VUE_APP_APIPATH}api/Users/${this.id}`,
+        url: `https://miubuy.rocket-coding.com/api/Users/${this.id}`,
         headers: {
           Authorization: `Bearer ${vm.token}`,
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -118,7 +144,16 @@ export default {
       };
       vm.axios(config)
         .then((res) => {
-          console.log(res);
+          if (res.data === Number(vm.id)) {
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: '個人資料更改成功★',
+              showConfirmButton: false,
+              timer: 2000,
+            });
+          }
+          window.location.reload();
         })
         .catch((err) => {
           console.log(err);
@@ -136,7 +171,7 @@ export default {
 }
 /*==============★ 本體★==============*/
 .mypage_content {
-  font-family: japanese-font, myfont, serif;
+  font-family: myfont, japanese-font, serif;
   color: darken($colorBrown, 10%);
   position: relative;
   background-color: $colorBrown;
@@ -148,6 +183,14 @@ export default {
 }
 .myinfo_content {
   display: flex;
+}
+.uploadBTN {
+  height: 100px;
+  width: 100px;
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  z-index: 10;
 }
 /*==============★ 裝飾★==============*/
 .deco01 {
@@ -183,7 +226,7 @@ export default {
   margin-top: 5px;
   position: relative;
   label {
-    font-size: 18px;
+    font-size: 22px;
     color: #fff;
   }
 }
@@ -206,11 +249,12 @@ export default {
     border-radius: 5px;
     padding-left: 7px;
     font-family: myfont, japanese-font, serif;
-    font-size: 20px;
+    font-size: 22px;
     color: $colorBrown;
   }
   input::placeholder {
     color: $colorBrown;
+    font-size: 20px;
   }
 }
 .my-photo {
@@ -230,6 +274,14 @@ export default {
   &:hover {
     background-color: rgba($colorHeader, 1);
   }
+  .myphoto {
+    width: 100px;
+    height: 100px;
+    border: 1px solid $colorBrown;
+    border-radius: 100%;
+    position: absolute;
+    z-index: 1;
+  }
 }
 .form-submit {
   background-color: $colorCat;
@@ -242,6 +294,7 @@ export default {
   position: absolute;
   right: 40px;
   bottom: -20px;
+  font-size: 24px;
   cursor: pointer;
   &:hover {
     background-color: $colorHeader;

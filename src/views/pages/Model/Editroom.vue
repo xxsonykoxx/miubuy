@@ -13,36 +13,61 @@
         <div class="modal-body-l">
         <div class="room_name_group group-flex mb">
           <label for="">房名</label>
-          <input type="text">
+          <input type="text" v-model="roomdata.Name">
         </div>
         <div class="room_photo_group group-flex mb">
+          <vue-core-image-upload
+            class="room_photo-uploadBTN"
+            :crop="false"
+            :credentials="false"
+            @imageuploaded="imageuploaded"
+            :max-file-size="5242880"
+            url="https://miubuy.rocket-coding.com/api/UpLoadFile" >
+          </vue-core-image-upload>
           <label for="">招牌圖片</label>
-          <div class="room_img">
-            <h3>上傳</h3>
-          </div>
+          <img :src="roomdata.Picture" class="room_img">
         </div>
         <div class="room_location_group group-flex mb">
           <label for="">所在地區</label>
           <div>
-            <select name="" id="">
-              <option value="">東京都</option>
-              <option value="">大坂府</option>
+            <select name=""
+            class="select-country"
+            v-model="roomdata.CountryId"
+            @change="getcounty()"
+            >
+              <!-- <option value="" selected disabled>( ^ω^ )</option> -->
+            <option v-for="country in getCountry"
+            :key="country.Id"
+            :value="country.Id">{{country.Name}}</option>
             </select>
-            <select name="" id="">
-            <option value="">新宿</option>
-            </select>
+            <div>
+              <select name="" v-model="roomdata.CountyId"
+              @change="getcity()"
+              >
+                <option v-for="county in getCounty"
+              :key="county.Id"
+              :value="county.Id">{{county.Name}}</option>
+              </select>
+              <select name="" v-model="roomdata.CityId">
+              <option v-for="city in getCity"
+              :key="city.Id"
+              :value="city.Id">{{city.Name}}</option>
+              </select>
+            </div>
           </div>
         </div>
         <div class="category_group group-flex mb">
           <label for="">代購種類</label>
           <select name="" id="">
-            <option value="">ACG（遊戲、動漫）</option>
+            <option v-for="tag in getTags" :key="tag.Id">
+             {{tag.Name}} </option>
           </select>
         </div>
         <div class="max_member group-flex mb">
           <label for="">最大人數</label>
-          <select name="" id="">
-            <option value="">1</option>
+          <select name="" v-model="roomdata.MaxUsers">
+            <option value="1" selected>1</option>
+            <option value="2">2</option>
           </select>
         </div>
         <div class="access_review-limit group-flex mb">
@@ -55,18 +80,19 @@
         </div>
         <ul class="access_checkgroup">
           <li class="r18_request">
-            <input type="checkbox"><span>是否接受R18委託代購</span>
+            <input type="checkbox" v-model="roomdata.R18"><span>是否接受R18委託代購</span>
           </li>
         </ul>
         </div>
         <div class="modal-body-r">
           <label for="" class="rule_title">房間規約</label>
-          <textarea name="" id="" cols="30" rows="10"></textarea>
+          <textarea name="" id="" cols="30" rows="10" v-model="roomdata.Rule"></textarea>
         </div>
       </div>
       <div class="modal-footer group-flex">
-        <button class="btn-close closemodale" aria-hidden="true">取消</button>
-        <button class="btn-close closemodale" aria-hidden="true">
+        <button class="btn-close closemodale" aria-hidden="true" @click="closeModal">取消</button>
+        <button class="btn-close closemodale" aria-hidden="true"
+        @click="putRoomInfo">
         確定</button>
       </div>
     </div>
@@ -74,7 +100,130 @@
 </template>
 
 <script>
-export default {};
+import VueCoreImageUpload from 'vue-core-image-upload';
+import $ from '../../../../node_modules/jquery';
+
+export default {
+  data() {
+    return {
+      getCountry: '',
+      getCounty: '',
+      getCity: '',
+      getTags: '',
+      token: '',
+    };
+  },
+  props: ['roomdata'],
+  components: {
+    'vue-core-image-upload': VueCoreImageUpload,
+  },
+  created() {
+    const vm = this;
+    this.token = document.cookie.replace(
+      // eslint-disable-next-line no-useless-escape
+      /(?:(?:^|.*;\s*)userToken\s*\=\s*([^;]*).*$)|^.*$/,
+      '$1',
+    );
+    /* ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆ Country ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆ */
+    const countryAPI = 'https://miubuy.rocket-coding.com/api/Countries';
+    vm.axios.get(countryAPI)
+      .then((res) => {
+        vm.getCountry = res.data;
+      });
+    /* ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆ Country ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆ */
+    const countyAPI = 'https://miubuy.rocket-coding.com/api/Counties';
+    vm.axios.get(countyAPI)
+      .then((res) => {
+        vm.getCounty = res.data;
+      });
+    /* ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆ City ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆ */
+    const cityAPI = 'https://miubuy.rocket-coding.com/api/Cities';
+    vm.axios.get(cityAPI)
+      .then((res) => {
+        vm.getCity = res.data;
+      });
+    /* ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆ Tags ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆ */
+    const tagAPI = 'https://miubuy.rocket-coding.com/api/Tags';
+    vm.axios.get(tagAPI)
+      .then((res) => {
+        vm.getTags = res.data;
+      });
+    /* ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆ Tags ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆ */
+  },
+  mounted() {
+    $('.openmodale').click((e) => {
+      e.preventDefault();
+      $('.modale').addClass('opened');
+    });
+    $('.closemodale').click((e) => {
+      e.preventDefault();
+      $('.modale').removeClass('opened');
+    });
+  },
+  methods: {
+    closeModal() {
+      $('.modale').removeClass('opened');
+    },
+    imageuploaded(res) {
+      const img = res;
+      this.roomdata.Picture = `https://miubuy.rocket-coding.com/Img/${img}`;
+    },
+    getcounty() {
+      const vm = this;
+      const countyAPI = `https://miubuy.rocket-coding.com/api/Counties/${vm.roomdata.CountryId}`;
+      vm.axios.get(countyAPI)
+        .then((res) => {
+          vm.getCounty = res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    getcity() {
+      const vm = this;
+      const cityAPI = `https://miubuy.rocket-coding.com/api/Cities/${vm.roomdata.CountyId}`;
+      vm.axios.get(cityAPI)
+        .then((res) => {
+          vm.getCity = res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    putRoomInfo() {
+      const vm = this;
+      const putRoomAPI = `https://miubuy.rocket-coding.com/api/Rooms/${vm.roomdata.Id}`;
+      const newroomDetail = vm.$qs.stringify({
+        MaxUsers: vm.roomdata.MaxUsers,
+        Name: vm.roomdata.Name,
+        Picture: vm.roomdata.Picture,
+        CountryId: Number(vm.roomdata.CountryId),
+        CountyId: Number(vm.roomdata.CountyId),
+        CityId: Number(vm.roomdata.CityId),
+        TagId: Number(vm.roomdata.TagId),
+        Rule: vm.roomdata.Rule,
+        R18: vm.roomdata.R18,
+        TagText: vm.roomdata.TagText,
+      });
+      const config = {
+        method: 'put',
+        url: putRoomAPI,
+        headers: {
+          Authorization: `Bearer ${vm.token}`,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        data: newroomDetail,
+      };
+      vm.axios(config)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+  },
+};
 </script>
 
 <style lang="scss">

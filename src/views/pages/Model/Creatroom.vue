@@ -16,10 +16,17 @@
           <input type="text" v-model=" roomInfo.Name" class="roomName">
         </div>
         <div class="room_photo_group group-flex mb">
+           <vue-core-image-upload
+            class="room_photo-uploadBTN"
+            :crop="false"
+            :credentials="false"
+            @imageuploaded="imageuploaded"
+            :max-file-size="5242880"
+            url="https://miubuy.rocket-coding.com/api/UpLoadFile" >
+          </vue-core-image-upload>
           <label for="">招牌圖片</label>
-          <div class="room_img">
-            <h3>上傳</h3>
-          </div>
+         <img :src="roomInfo.Picture" class="room_img">
+          <!-- <h3>上傳(jpg)</h3> -->
         </div>
         <div class="room_location_group group-flex mb">
           <label for="">所在地區</label>
@@ -38,13 +45,12 @@
               <select name="" v-model="roomInfo.CountyId"
               @change="getcity()"
               >
-                <option value="" selected disabled>☆彡</option>
+                <option value="1" selected>不選 ☆彡</option>
                 <option v-for="county in getCounty"
               :key="county.Id"
               :value="county.Id">{{county.Name}}</option>
               </select>
               <select name="" v-model="roomInfo.CityId">
-              <option value="" selected disabled>★彡</option>
               <option v-for="city in getCity"
               :key="city.Id"
               :value="city.Id">{{city.Name}}</option>
@@ -63,8 +69,7 @@
         <div class="max_member group-flex mb">
           <label for="">最大人數</label>
           <select name="" v-model="roomInfo.MaxUsers">
-            <option value="1">1</option>
-            <option value="1">1</option>
+            <option value="1" selected>1</option>
           </select>
         </div>
         <div class="access_review-limit group-flex mb">
@@ -72,7 +77,6 @@
           <select name="" id="">
             <option value="">0</option>
             <option value="">1</option>
-            <option value="">2</option>
           </select>
         </div>
         <ul class="access_checkgroup">
@@ -96,6 +100,7 @@
 </template>
 
 <script>
+import VueCoreImageUpload from 'vue-core-image-upload';
 import $ from '../../../../node_modules/jquery';
 
 export default {
@@ -104,7 +109,7 @@ export default {
       roomInfo: {
         MaxUsers: '',
         Name: '',
-        Picture: '',
+        Picture: null,
         CountryId: '',
         CountyId: '',
         CityId: '',
@@ -121,6 +126,9 @@ export default {
       routerID: '',
     };
   },
+  components: {
+    'vue-core-image-upload': VueCoreImageUpload,
+  },
   created() {
     this.token = document.cookie.replace(
       // eslint-disable-next-line no-useless-escape
@@ -130,13 +138,13 @@ export default {
     /* ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆ */
     const vm = this;
     /* ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆ */
-    const countryAPI = `${process.env.VUE_APP_APIPATH}api/Countries`;
+    const countryAPI = 'https://miubuy.rocket-coding.com/api/Countries';
     vm.axios.get(countryAPI)
       .then((res) => {
         vm.getCountry = res.data;
       });
     /* ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆ */
-    const tagAPI = `${process.env.VUE_APP_APIPATH}api/Tags`;
+    const tagAPI = 'https://miubuy.rocket-coding.com/api/Tags';
     vm.axios.get(tagAPI)
       .then((res) => {
         vm.getTags = res.data;
@@ -153,9 +161,13 @@ export default {
     });
   },
   methods: {
+    imageuploaded(res) {
+      const img = res;
+      this.roomInfo.Picture = `https://miubuy.rocket-coding.com/Img/${img}`;
+    },
     getcounty() {
       const vm = this;
-      const countyAPI = `${process.env.VUE_APP_APIPATH}api/Counties/${vm.roomInfo.CountryId}`;
+      const countyAPI = `https://miubuy.rocket-coding.com/api/Counties/${vm.roomInfo.CountryId}`;
       vm.axios.get(countyAPI)
         .then((res) => {
           vm.getCounty = res.data;
@@ -166,7 +178,7 @@ export default {
     },
     getcity() {
       const vm = this;
-      const cityAPI = `${process.env.VUE_APP_APIPATH}api/Cities/${vm.roomInfo.CountyId}`;
+      const cityAPI = `https://miubuy.rocket-coding.com/api/Cities/${vm.roomInfo.CountyId}`;
       vm.axios.get(cityAPI)
         .then((res) => {
           vm.getCity = res.data;
@@ -177,8 +189,19 @@ export default {
     },
     creatRoom() {
       const vm = this;
-      const roomsAPI = `${process.env.VUE_APP_APIPATH}api/Rooms`;
-      const roomDetail = this.$qs.stringify(this.roomInfo);
+      const roomsAPI = 'https://miubuy.rocket-coding.com/api/Rooms';
+      const roomDetail = this.$qs.stringify({
+        MaxUsers: Number(vm.roomInfo.MaxUsers),
+        Name: vm.roomInfo.Name,
+        Picture: vm.roomInfo.Picture,
+        CountryId: Number(vm.roomInfo.CountryId),
+        CountyId: Number(vm.roomInfo.CountyId),
+        CityId: Number(vm.roomInfo.CityId),
+        TagId: Number(vm.roomInfo.TagId),
+        Rule: vm.roomInfo.Rule,
+        R18: vm.roomInfo.R18,
+        TagText: vm.roomInfo.TagText,
+      });
       const config = {
         method: 'post',
         url: roomsAPI,

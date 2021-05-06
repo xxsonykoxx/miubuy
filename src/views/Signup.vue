@@ -32,6 +32,7 @@
               <label for="" class="sign_pass">密碼</label>
               <input
                 type="password"
+                name="fieldName"
                 class="password"
                 v-model="user_signup.Password"
               />
@@ -46,9 +47,16 @@
             </div>
           </div>
           <div class="signup_photo_group">
-            <p>
-              上傳照片
-            </p>
+          <vue-core-image-upload
+            class="uploadBTN"
+            :crop="false"
+            :credentials="false"
+            @imageuploaded="imageuploaded"
+            :max-file-size="5242880"
+            url="https://miubuy.rocket-coding.com/api/UpLoadFile" >
+          </vue-core-image-upload>
+          <img :src="user_signup.Photo" class="signup-photo">
+            <h3>上傳</h3>
           </div>
         </div>
         <div class="hr"></div>
@@ -61,7 +69,9 @@
 
         <div class="email_group">
           <label for="" class="sign_email">信箱</label>
-          <input type="email" class="email" v-model="user_signup.Email" />
+          <input type="email" class="email"
+          required
+          v-model="user_signup.Email" />
         </div>
         <div class="phone_group">
           <label for="" class="sign_phone">電話</label>
@@ -144,6 +154,7 @@
 
 <!-- 代辦事項： 表單驗證功能 -->
 <script>
+import VueCoreImageUpload from 'vue-core-image-upload';
 import Swal from 'sweetalert2';
 
 export default {
@@ -157,31 +168,42 @@ export default {
         Name: '',
         Alias: '',
         Phone: '',
-        Photo: '',
+        Photo: null,
         Birthday: {
           Year: '',
           Month: '',
           Day: '',
         },
+        emailRules: [
+          (v) => !!v || 'E-mail is required',
+          (v) => /.+@.+/.test(v) || 'E-mail must be valid',
+        ],
       },
       agree: false,
     };
+  },
+  components: {
+    'vue-core-image-upload': VueCoreImageUpload,
   },
   created() {
     document.body.className = 'signup';
   },
   methods: {
+    imageuploaded(res) {
+      const img = res;
+      this.user_signup.Photo = `https://miubuy.rocket-coding.com/Img/${img}`;
+    },
     signup() {
-      const API = `${process.env.VUE_APP_APIPATH}api/Users`;
+      const API = 'https://miubuy.rocket-coding.com/api/Users';
       const userSignUp = this.$qs.stringify({
         Account: this.user_signup.Account,
         Password: this.user_signup.Password,
         RePassword: this.user_signup.RePassword,
         Email: this.user_signup.Email,
         Name: this.user_signup.Name,
-        Alias: this.user_signup.Alias,
+        Nickname: this.user_signup.Alias,
         Phone: this.user_signup.Phone,
-        Photo: this.user_signup.Photo,
+        Picture: this.user_signup.Photo,
         Birthday: `${this.user_signup.Birthday.Year}-${this.user_signup.Birthday.Month}-${this.user_signup.Birthday.Day}`,
       });
 
@@ -206,10 +228,17 @@ export default {
         Swal.fire('請同意利用規約(´・ω・｀)');
       } else {
         this.axios(config)
-          .then((response) => {
-            console.log(response);
-            console.log(userSignUp);
-            this.$router.push('/');
+          .then(() => {
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: '註冊成功💌 請重新登入',
+              showConfirmButton: false,
+              timer: 2500,
+            })
+              .then(() => {
+                this.$router.push('/Login');
+              });
           })
           .catch((error) => {
             console.log(error);
@@ -269,7 +298,7 @@ body.signup {
   bottom: 5px;
   z-index: 99;
   color: #fff;
-  font-family: myfont, serif;
+  font-family: myfont, japanese-font, serif;
   span {
     font-size: 12px;
   }
@@ -377,9 +406,16 @@ body.signup {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  p {
+  h3 {
     color: #fff;
     font-size: 20px;
+  }
+  .signup-photo {
+    height: 120px;
+    width: 120px;
+    border-radius: 100%;
+    position: absolute;
+    z-index: 1;
   }
   &:hover {
     background-color: rgba(255, 255, 255, 0.516);
@@ -389,7 +425,7 @@ body.signup {
   position: relative;
 }
 .sign_form_content {
-  font-family: myfont, serif;
+  font-family: myfont, japanese-font, serif;
   font-weight: lighter;
   position: absolute;
   padding: 20px;
@@ -414,7 +450,7 @@ body.signup {
     margin-bottom: 15px;
   }
   input {
-    font-family: myfont, serif;
+    font-family: myfont, japanese-font, serif;
     height: 28px;
     border: none;
     border-radius: 4px;
@@ -477,7 +513,7 @@ body.signup {
 }
 input::placeholder {
   color: #fff;
-  font-size: 16px;
+  font-size: 12px;
 }
 //☆=========== terms ==========☆
 .terms_group {

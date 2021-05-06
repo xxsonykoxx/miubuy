@@ -5,6 +5,7 @@
         <div class="select_group">
           <select class="select_country"
           v-model="prefectureSelected"
+          @change="getCity()"
           >
             <option selected>{{prefectureName}}</option>
             <option v-for="prefecture in prefectures" :key="prefecture.Id"
@@ -19,7 +20,8 @@
             <option v-for="city in citys" :key="city.Id"
                   :value="city.Id">{{city.Name}}</option>
           </select>
-          <input type="button" value="GO★" class="re-select_btn" />
+          <input type="button" value="GO★" class="re-select_btn"
+          @click="searchArea" />
         </div>
       </div>
       <!--☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆-->
@@ -54,7 +56,10 @@
             快速找房間 ( ^ω^ )
           </h3>
           <ul class="tags">
-            <li class="tag tag-pink" v-for="tag in tags" :key="tag.Id">
+            <li class="tag tag-color" v-for="tag in tags" :key="tag.Id"
+            :style="{'background-color': tag.Color}"
+            @click="tagSearch(tag.Id)"
+            >
               {{tag.Name}}
             </li>
           </ul>
@@ -76,33 +81,33 @@
               src="/image/ribon_pink.png"
               alt=""
               class="ribon_pink"
-            />&nbsp;目前房間數&nbsp;<span>220</span>&nbsp;
+            />&nbsp;目前房間數&nbsp;<span>{{rooms.length}}</span>&nbsp;
             <img src="/image/stars.png" alt="" class="room_star" />
           </h3>
           <ul class="chatroom_list">
             <li class="chatroom" v-for="room in rooms" :key="room.Id">
-              <div class="room_cover"></div>
+              <div class="room_cover"
+              :style="{'background-image': `url(${room.Picture})`}"
+              ></div>
               <div class="user_group">
-                <div class="profile_img"></div>
+                <div class="profile_img"
+                :style="{'background-image': `url(${room.Seller[0].Picture})`}"></div>
                 <div class="user">
-                  <h3 class="user_name">田中さん</h3>
-                  <h3 class="user_account"><a href="#">@tanaka123</a></h3>
+                  <h3 class="user_name">{{room.Seller[0].Nickname}}</h3>
+                  <!-- <h3 class="user_account"><a href="#">@tanaka123</a></h3> -->
                 </div>
               </div>
               <div class="room_info">
-                <h3 class="roomName">
-                    ☆ 房名：<span class="open_time">{{room.Name}}</span>
+                <h3 class="roomsName">
+                  {{room.Name}}
                 </h3>
                 <h3 class="room_open">
                   ☆ 開房時間：<span class="open_time">{{room.roomStart}}</span>
                 </h3>
-                <h3 class="room_close">
+                <!-- <h3 class="room_close">
                   ☆ 截止時間：<span class="close_time">{{room.roomEnd}}</span
                   >
-                  <!-- <span class="remain"
-                    >剩<span class="remaining-time">20</span>分</span
-                  > -->
-                </h3>
+                </h3> -->
                 <div class="hr"></div>
                 <h3 class="room_rule">
                   ☆ 賣家規約：
@@ -111,13 +116,19 @@
                   </p>
                 </h3>
                 <ul class="roomtag_group">
-                  <li class="roomtag"><a href="#">#東京</a></li>
-                  <li class="roomtag"><a href="#">#池袋</a></li>
-                  <li class="roomtag"><a href="#">#ACG</a></li>
-                  <li class="roomtag"><a href="#">#代抽</a></li>
-                  <li class="roomtag"><a href="#">#偶像夢幻祭</a></li>
+                  <li class="roomtag"
+                  v-if="room.CountyName!=='不選☆彡'"
+                  ><a href="#">#{{room.CountyName}}</a></li>
+                  <li class="roomtag"
+                  v-if="room.CityName!=='不選★彡'"
+                  ><a href="#">#{{room.CityName}}</a></li>
+                  <li class="roomtag"
+                  v-if="room.CityName==='不選★彡'"
+                  ><a href="#">#全國</a></li>
+                  <li class="roomtag"><a href="#">#{{room.TagName}}</a></li>
                 </ul>
-               <router-link to="/Chatroom/9"><div class="room-enter_btn"></div></router-link>
+                <div class="room-enter_btn" @click="getID(room.Id)"></div>
+                <div class="fullmember" v-if="room.JoinRoom===0"></div>
               </div>
             </li>
           </ul>
@@ -140,12 +151,27 @@
      <creatroom></creatroom>
      <div class="return-chatroom_btn"
      :class="{'return-chatroom_display-none':display}">
-       <img src="/image/return_chat.png" alt="" width="130px" @click="returnChatroom">
+       <img src="/image/return_chat.png" alt="" width="130px">
      </div>
+    <div class="loader" key="loader">
+      <div id="loading" v-show="!loading">
+        <div class="loading">
+          <div class="obj"></div>
+          <div class="obj"></div>
+          <div class="obj"></div>
+          <div class="obj"></div>
+          <div class="obj"></div>
+          <div class="obj"></div>
+          <div class="obj"></div>
+          <div class="obj"></div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import Swal from 'sweetalert2';
 import $ from '../../../node_modules/jquery';
 import creatroom from './Model/Creatroom.vue';
 
@@ -155,6 +181,7 @@ export default {
       prefectures: '',
       prefectureName: '',
       prefectureSelected: '',
+      country: '',
       citys: '',
       cityName: '',
       citySelected: '',
@@ -163,6 +190,12 @@ export default {
       display: true,
       roomID: '',
       rooms: [],
+      tagName: '',
+      isFull: false,
+      myUserID: '',
+      loading: false,
+      county: '',
+      city: '',
     };
   },
   components: {
@@ -172,40 +205,116 @@ export default {
     document.body.className = 'chatroomlist_BGI';
   },
   methods: {
-    returnChatroom() {
-      if (this.roomID === this.saveID) {
-        this.$router.push(`/Chatroom/${this.roomID}`);
-      }
-    },
-  },
-  created() {
-    const vm = this;
-    /* ☆…☆…☆…☆…☆…☆ 地図API ☆…☆…☆…☆…☆…☆ */
-    const country = sessionStorage.getItem('Countries');
-    const APIprefectures = `${process.env.VUE_APP_APIPATH}api/Counties/${country}`;
-    const APIcity = `${process.env.VUE_APP_APIPATH}api/Cities/${this.prefectureSelected}`;
-    if (country === '1') {
-      vm.axios.get(APIprefectures)
+    tagSearch(id) {
+      const vm = this;
+      const nowCountry = vm.country;
+      const API = 'https://miubuy.rocket-coding.com/api/SelectRooms';
+      const search = vm.$qs.stringify({
+        TagId: id,
+        CountryId: nowCountry,
+      });
+      const roomsConfig = {
+        method: 'post',
+        url: API,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        data: search,
+      };
+      vm.axios(roomsConfig)
         .then((res) => {
-          vm.prefectures = res.data;
-          vm.prefectureSelected = sessionStorage.getItem('prefecture');
-          vm.prefectures.forEach((i) => {
-            if (i.Id === vm.prefectureSelected) {
-              vm.prefectureName = i.Name;
-            }
-          });
+          vm.rooms = res.data;
+        })
+        .catch((err) => {
+          console.log(err);
         });
+    },
+    getCity() {
+      const vm = this;
+      const APIcity = `https://miubuy.rocket-coding.com/api/Cities/${this.prefectureSelected}`;
       vm.axios.get(APIcity)
         .then((res) => {
           vm.citys = res.data;
-          vm.citySelected = sessionStorage.getItem('city');
-          vm.citys.forEach((i) => {
-            if (i.id === vm.citySelected) {
-              vm.cityName = i.Name;
-            }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    getID(roomId) {
+      const roomUserAPI = 'https://miubuy.rocket-coding.com/api/RoomUsers';
+      const roomUser = this.$qs.stringify({
+        Id: roomId,
+        Name: '假資料',
+      });
+      const config = {
+        method: 'post',
+        url: roomUserAPI,
+        headers: {
+          Authorization: `Bearer ${this.token}`,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        data: roomUser,
+      };
+      this.axios(config)
+        .then(() => {
+          this.$router.push(`/Chatroom/${roomId}`);
+        })
+        .catch((err) => {
+          console.log(JSON.stringify(err));
+          Swal.fire({
+            position: 'center',
+            icon: 'error',
+            title: '目前房間滿員 or 你還沒登入 (´・ω・｀)',
+            showConfirmButton: false,
+            timer: 2500,
           });
         });
-    }
+    },
+    searchArea() {
+      const vm = this;
+      const roomsAPI = 'https://miubuy.rocket-coding.com/api/SelectRooms';
+      const selectroom = vm.$qs.stringify({
+        CountryId: vm.country,
+        CountyId: vm.prefectureSelected,
+        CityId: vm.citySelected,
+      });
+      const roomsConfig = {
+        method: 'post',
+        url: roomsAPI,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        data: selectroom,
+      };
+      vm.axios(roomsConfig)
+        .then((res) => {
+          vm.rooms = res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+  },
+  created() {
+    this.myUserID = localStorage.getItem('ID');
+    this.token = document.cookie.replace(
+      // eslint-disable-next-line no-useless-escape
+      /(?:(?:^|.*;\s*)userToken\s*\=\s*([^;]*).*$)|^.*$/,
+      '$1',
+    );
+    /* Loading ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆ */
+    setTimeout(() => {
+      this.loading = true;
+    }, 1500);
+    /* ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆.｡.:*・ﾟ ☆ */
+    const vm = this;
+    /* ☆…☆…☆…☆…☆…☆ 區域篩選API ☆…☆…☆…☆…☆…☆ */
+    const country = sessionStorage.getItem('Countries');
+    vm.country = sessionStorage.getItem('Countries');
+    vm.county = sessionStorage.getItem('prefecture');
+    vm.city = sessionStorage.getItem('city');
+    const APIprefectures = `https://miubuy.rocket-coding.com/api/Counties/${country}`;
+    const APIcity = `https://miubuy.rocket-coding.com/api/Cities/${this.prefectureSelected}`;
     if (country === '2') {
       vm.axios.get(APIprefectures)
         .then((res) => {
@@ -228,8 +337,30 @@ export default {
           });
         });
     }
+    if (country === '3') {
+      vm.axios.get(APIprefectures)
+        .then((res) => {
+          vm.prefectures = res.data;
+          vm.prefectureSelected = sessionStorage.getItem('prefecture');
+          vm.prefectures.forEach((i) => {
+            if (i.Id === vm.prefectureSelected) {
+              vm.prefectureName = i.Name;
+            }
+          });
+        });
+      vm.axios.get(APIcity)
+        .then((res) => {
+          vm.citys = res.data;
+          vm.citySelected = sessionStorage.getItem('city');
+          vm.citys.forEach((i) => {
+            if (i.id === vm.citySelected) {
+              vm.cityName = i.Name;
+            }
+          });
+        });
+    }
     /* ☆…☆…☆…☆…☆…☆ タグAPI ☆…☆…☆…☆…☆…☆ */
-    const tagAPI = `${process.env.VUE_APP_APIPATH}api/Tags`;
+    const tagAPI = 'https://miubuy.rocket-coding.com/api/Tags';
     vm.axios.get(tagAPI)
       .then((res) => {
         vm.tags = res.data;
@@ -238,13 +369,19 @@ export default {
         console.log(err);
       });
     /* ☆…☆…☆…☆…☆…☆ ROOM API ☆…☆…☆…☆…☆…☆ */
-    const roomsAPI = `${process.env.VUE_APP_APIPATH}api/Rooms`;
+    const roomsAPI = 'https://miubuy.rocket-coding.com/api/SelectRooms';
+    const selectroom = vm.$qs.stringify({
+      CountryId: vm.country,
+      CountyId: vm.county,
+      CityId: vm.city,
+    });
     const roomsConfig = {
-      method: 'get',
+      method: 'post',
       url: roomsAPI,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
+      data: selectroom,
     };
     vm.axios(roomsConfig)
       .then((res) => {
@@ -253,7 +390,8 @@ export default {
       .catch((err) => {
         console.log(err);
       });
-    /* ☆…☆…☆…☆…☆…☆ return BTN ☆…☆…☆…☆…☆…☆ */
+    /* ☆…☆…☆…☆…☆…☆ 満員チェック ☆…☆…☆…☆…☆…☆ */
+    /* ☆…☆…☆…☆…☆…☆ enter BTN ☆…☆…☆…☆…☆…☆ */
   },
   mounted() {
     $(window).mousemove((evt) => {
